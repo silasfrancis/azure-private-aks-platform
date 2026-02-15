@@ -1,0 +1,27 @@
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Environment files
+.env
+.env.example
+
+# Logs
+*.log
+
+# Test files / directories
+tests/
+.postman/
+
+# Git / GitHub
+.git/
+.github/
+
+# Docker files not needed in context
+Dockerfile.*
+docker-compose.yml
+
+# OS files
+.DS_Store

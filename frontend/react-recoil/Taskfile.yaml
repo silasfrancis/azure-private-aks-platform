@@ -1,0 +1,57 @@
+version: "3"
+
+vars:
+  IMAGE_REPO: "silasfrancis/devops-client"
+  IMAGE_TAG: "latest"
+  PORT: 3000
+  ENV: "dev"
+
+tasks:
+  install_dependencies:
+    desc: "Install project dependencies"
+    cmds:
+      -  yarn install 
+  
+  install_dependencies_ci:
+    desc: "Install project dependencies for CI"
+    cmds:
+      - yarn install --frozen-lockfile  
+  
+  dev-server:
+    desc: "Run development server"
+    cmds:
+      - yarn start
+    env:
+      PORT: "{{.PORT}}"
+      BROWSER: none  
+
+  build_prod_server:
+    desc: "Build production bundle"
+    cmds:
+      - yarn build
+
+  preview_prod_server:
+    desc: "Preview production build locally"
+    deps: [build_prod_server]
+    cmds:
+      - npx serve -s build -l {{.PORT}}
+      
+  test:
+    desc: "Run tests"
+    cmds:
+      - yarn test
+
+  build-container:
+    desc: "Build container image"
+    cmds:
+      - docker build -t {{.IMAGE_REPO}}:{{.IMAGE_TAG}} .
+
+  build-container-image-multi-arch:
+    desc: "Build multi-arch container image"
+    cmds:
+      - |
+        docker buildx build \
+        --target {{.ENV}} \
+        --platform linux/amd64,linux/arm64 \
+        -t {{.IMAGE_REPO}}:{{.IMAGE_TAG}} \
+        --push .

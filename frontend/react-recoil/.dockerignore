@@ -1,0 +1,38 @@
+# Local dependencies
+node_modules
+
+# Logs
+*.log
+logs
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Build outputs
+build
+dist
+.next
+out
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Cache
+.npm
+.cache
+.parcel-cache
+.eslintcache
+
+# Temp files
+tmp
+temp
+*.tmp
+*.temp

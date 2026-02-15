@@ -1,0 +1,46 @@
+version: "3"
+
+vars:
+  IMAGE_REPO: "silasfrancis/devops-api"
+  IMAGE_TAG: "latest"
+  ENV: "dev"
+
+tasks:
+  install_dependencies:
+    desc: "Install project dependencies"
+    cmds:
+      - pip install -r requirements.txt
+
+  install_dependencies_ci:
+    desc: "Install project dependencies for CI"
+    cmds:
+      - python -m pip install --upgrade pip
+      - python -m pip install -r requirements.txt
+  
+  run:
+    desc: "Run the FastAPI application"
+    cmds:
+      - uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+  test:
+    desc: "Run tests"
+    cmds:
+      - python -m pytest ./tests/
+  
+  build-container:
+    desc: "Build container image"
+    cmds:
+      - docker build -t {{.IMAGE_REPO}}:{{.IMAGE_TAG}} .
+
+  build-container-image-multi-arch:
+    desc: "Build multi-arch container image"
+    cmds:
+      - |
+        docker buildx build \
+        --target {{.ENV}} \
+        --platform linux/amd64,linux/arm64 \
+        -t {{.IMAGE_REPO}}:{{.IMAGE_TAG}} \
+        --push .
+
+
+
