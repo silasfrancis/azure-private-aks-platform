@@ -1,4 +1,4 @@
-variable "key_vault_name" {
+variable "container_registry_name" {
   type = string
 }
 
