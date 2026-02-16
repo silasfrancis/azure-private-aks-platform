@@ -45,10 +45,10 @@ tasks:
     
   cert_manager:install:
     desc: Install Cert Manager for TLS certificate configuration
-    cmd: kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.0/certmanager.yaml
+    cmd: kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.19.2/cert-manager.yaml
 
 
-# Helm
+# k8 configs
   1:apply_namespace:
     cmd: kubectl apply -f 001_app_namespace.yaml
 
