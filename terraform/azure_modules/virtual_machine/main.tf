@@ -18,6 +18,7 @@ resource "azurerm_linux_virtual_machine" "vm" {
   location = var.resource_group_location
   network_interface_ids = var.network_interface_ids
   admin_username = "ansible_user"
+  zone = "2"
   os_disk {
     caching = "ReadWrite"
     storage_account_type = "Standard_LRS"
@@ -27,11 +28,15 @@ resource "azurerm_linux_virtual_machine" "vm" {
     username = "ansible_user"
     public_key = data.azurerm_ssh_public_key.ansible_ssh_key.public_key
   }
-    source_image_reference {
+  source_image_reference {
     publisher = "Canonical"
     offer     = "0001-com-ubuntu-server-jammy"
     sku       = "22_04-lts"
     version   = "latest"
+  }
+  identity {
+    type = "UserAssigned"
+    identity_ids = var.vm_managed_identity
   }
 
 }

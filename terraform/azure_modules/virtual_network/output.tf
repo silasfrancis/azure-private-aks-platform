@@ -13,3 +13,7 @@ output "subnet_ids" {
 output "network_interface_id" {
   value = azurerm_network_interface.vm_nic.id
 }
+
+output "private_dns_zone_id" {
+  value = azurerm_private_dns_zone.pg.id
+}
