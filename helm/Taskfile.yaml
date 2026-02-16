@@ -2,6 +2,7 @@ version: "3"
 
 env:
   AZURE_REGION: East US
+  NAMESPACE: azure-alb-system
 
 tasks:
     
@@ -36,10 +37,10 @@ tasks:
         - |
           MANAGED_IDENTITY_CLIENT_ID = (az identity show   --name ${MANAGED_IDENTITY_NAME}  --resource-group ${RESOURCE_GROUP} --query clientId -o tsv)
           helm install alb-controller oci://mcr.microsoft.com/application-lb/charts/alb-controller \
-          --namespace azure-alb-system \
+          --namespace ${NAMESPACE} \
           --create-namespace \
           --version 1.9.13 \
-          --set albController.namespace=azure-alb-system \
+          --set albController.namespace=${NAMESPACE} \
           --set albController.podIdentity.clientID=$MANAGED_IDENTITY_CLIENT_ID
 
 
