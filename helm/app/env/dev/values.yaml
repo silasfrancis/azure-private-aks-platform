@@ -1,0 +1,29 @@
+env: dev
+apps:
+  namespace: apps-namespace
+  fastapi:
+    replicas: 1
+    image: silasfrancis/devops-api-dev:e46aca1
+    resources:
+      limits:
+        cpu: 250m
+        memory: 512Mi
+      requests:
+        cpu: 100m
+        memory: 256Mi
+  reactRecoil:
+    replicas: 1
+    image: silasfrancis/devops-client-dev:e46aca1
+    resources:
+      limits:
+        cpu: 1
+        memory: 2Gi
+      requests:
+        cpu: 200m
+        memory: 1Gi
+postgres:
+  namespace: postgres-namespace
+  database: francis_db
+  password: francisdb
+  port: 5432
+  user: francis_user

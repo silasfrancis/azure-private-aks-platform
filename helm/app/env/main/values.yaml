@@ -1,0 +1,28 @@
+env: main
+
+apps:
+  namespace: apps-namespace
+  fastapi:
+    replicas: 2
+    image: 811639244661.dkr.ecr.us-east-2.amazonaws.com/silasfrancis/devops-api-main:e46aca1
+    resources: 
+      limits:
+        cpu: 500m
+        memory: 512Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi
+  reactRecoil:
+    replicas: 2
+    image: 811639244661.dkr.ecr.us-east-2.amazonaws.com/silasfrancis/devops-client-main:e46aca1
+    resources:
+      limits:
+        cpu: 1
+        memory: 2Gi
+      requests:
+        cpu: 200m
+        memory: 1Gi
+
+postgres:
+  namespace: postgres-namespace
+  port: 5432

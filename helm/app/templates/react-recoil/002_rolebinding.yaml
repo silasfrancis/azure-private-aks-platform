@@ -1,0 +1,13 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: react-recoil-rolebinding
+  namespace: {{ .Values.apps.namespace }}
+subjects:
+  - kind: ServiceAccount
+    name: react-recoil-serviceaccount
+    namespace: {{ .Values.apps.namespace }}
+roleRef:
+  kind: Role
+  name: react-recoil-role
+  apiGroup: rbac.authorization.k8s.io

@@ -1,0 +1,80 @@
+version: "3"
+
+env:
+  AZURE_REGION: East US
+
+tasks:
+    
+  azure:01-connect-to-cluster:
+    cmd:
+        |
+        az aks get-credentials \
+        --resource-group ${RESOURCE_GROUP} \
+        --name ${CLUSTER_NAME}
+
+# kubectl config current-context
+# kubectl config get-contexts
+# kubectl config use-context <context-name>
+  
+#Install External Secrets into cluster
+  1:install_external_secrets_for_vault:
+    cmd:
+      |
+      helm repo add external-secrets https://charts.external-secrets.io
+
+      helm install external-secrets \
+        external-secrets/external-secrets \
+          -n external-secrets \
+          --create-namespace 
+          #--set installCRDs=false
+
+# install gateway api controllers
+  1-azure-alb-controller:
+      desc: "Install azure alb controller with Gateway API support"
+      cmds:
+        - kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/latest/download/standard-install.yaml
+        - |
+          MANAGED_IDENTITY_CLIENT_ID = (az identity show   --name ${MANAGED_IDENTITY_NAME}  --resource-group ${RESOURCE_GROUP} --query clientId -o tsv)
+          helm install alb-controller oci://mcr.microsoft.com/application-lb/charts/alb-controller \
+          --namespace azure-alb-system \
+          --create-namespace \
+          --version 1.9.13 \
+          --set albController.namespace=azure-alb-system \
+          --set albController.podIdentity.clientID=$MANAGED_IDENTITY_CLIENT_ID
+
+
+# Helm
+  1:apply_namespace:
+    cmds: 
+      - kubectl apply -f app_namespace.yaml
+
+  2:apply_helm_config_for_app:
+    cmd:
+        |
+         helm install app app \
+          -f app/env/dev/values.yaml \
+          -n apps-namespace \
+          --create-namespace
+
+  3:apply_platform_configs_for_app:
+    cmd:
+        |
+          helm install platform platform \
+          -f platform/values.yaml
+          -n apps-namespace \
+          --create-namespace
+
+  4:apply_upgrade_to_app:
+    cmd: 
+      |
+       helm upgrade --install app app \
+        -f app/env/dev/values.yaml \
+        -n apps-namespace
+
+  5:apply_upgrade_to_platform_configs:
+    cmd: 
+      |
+        helm upgrade --install platform platform \
+        -f platform/values.yaml
+        -n apps-namespace \
+        --create-namespace

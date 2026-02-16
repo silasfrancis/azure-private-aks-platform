@@ -1,0 +1,17 @@
+apps:
+  namespace: apps-namespace
+  fastapi:
+    service: fastapi-service
+  react_recoil:
+    service: react-recoil-service
+
+gateway_class:
+  name: kong
+
+gateway:
+  name: kong_gateway_api
+
+http_route:
+  hostnames:
+    api: "api.lefrancis.org"
+    app: "app.lefrancis.org"

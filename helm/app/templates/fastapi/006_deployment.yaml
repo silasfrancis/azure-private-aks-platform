@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fastapi-deployment
+  namespace: {{ .Values.apps.namespace }}
+  labels:
+    {{ include "fast-api.labels" . }}
+spec:
+  replicas: {{ .Values.apps.fastapi.replicas }}
+  selector:
+    matchLabels:
+      {{ include "fast-api.labels" . }}
+  template:
+    metadata:
+      labels:
+        {{ include "fast-api.labels" . }}
+    spec:
+      serviceAccountName: fastapi-serviceaccount
+      containers:
+        - name: fastapi-container
+          image: {{ .Values.apps.fastapi.image }}
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          resources:
+            limits:
+              memory: "{{ .Values.apps.fastapi.resources.limits.memory }}"
+              cpu: "{{ .Values.apps.fastapi.resources.limits.cpu }}"
+            requests:
+              memory: "{{ .Values.apps.fastapi.resources.requests.memory }}"
+              cpu: "{{ .Values.apps.fastapi.resources.requests.cpu }}"
+          env:
+            - name: SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: fastapi-secrets
+                  key: SECRET_KEY
+            - name: JWT_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: fastapi-secrets
+                  key: JWT_SECRET_KEY
+            - name: POSTGRES_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: fastapi-secrets
+                  key: POSTGRES_HOST
+            - name: POSTGRES_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: fastapi-secrets
+                  key: POSTGRES_PORT
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: fastapi-secrets
+                  key: POSTGRES_DB
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: fastapi-secrets
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: fastapi-secrets
+                  key: POSTGRES_PASSWORD

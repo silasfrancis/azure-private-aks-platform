@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: react-recoil-deployment
+  namespace: {{ .Values.apps.namespace }}
+  labels:
+    {{ include "react-recoil.labels" . }}
+spec:
+  replicas: {{ .Values.apps.reactRecoil.replicas }}
+  selector:
+    matchLabels:
+      {{ include "react-recoil.labels" . }}
+  template:
+    metadata:
+      labels:
+        {{ include "react-recoil.labels" . }}
+    spec:
+      serviceAccountName: react-recoil-serviceaccount
+      containers:
+        - name: react-recoil-container
+          image: {{ .Values.apps.reactRecoil.image }}
+          ports:
+            - containerPort: 3000
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: 3000
+          #   initialDelaySeconds: 120
+          #   periodSeconds: 30
+          resources:
+            limits:
+              memory: "{{ .Values.apps.reactRecoil.resources.limits.memory }}"
+              cpu: "{{ .Values.apps.reactRecoil.resources.limits.cpu }}"
+            requests:
+              memory: "{{ .Values.apps.reactRecoil.resources.requests.memory }}"
+              cpu: "{{ .Values.apps.reactRecoil.resources.requests.cpu }}"
+          env:
+            - name: REACT_APP_API_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: react-recoil-configmap
+                  key: REACT_APP_API_URL
+            - name: HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: react-recoil-configmap
+                  key: HOST
+            - name: PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: react-recoil-configmap
+                  key: PORT
+            - name: CHOKIDAR_USEPOLLING
+              valueFrom:
+                configMapKeyRef:
+                  name: react-recoil-configmap
+                  key: CHOKIDAR_USEPOLLING

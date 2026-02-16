@@ -14,8 +14,9 @@ resource "azurerm_kubernetes_cluster" "k8_cluster" {
   kubernetes_version = 1.34
   dns_prefix = "silas${var.env}"         
   dns_prefix_private_cluster = "silas${var.env}priv"
-
   private_cluster_enabled = true
+  oidc_issuer_enabled = true
+  workload_identity_enabled = true
 
   default_node_pool {
     name       = "default"

@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: react-recoil-configmap
+  namespace: {{ .Values.apps.namespace }}
+data:
+  REACT_APP_API_URL: "http://fastapi-service/api"
+  HOST: "0.0.0.0"
+  PORT: "3000"
+  CHOKIDAR_USEPOLLING: "true"

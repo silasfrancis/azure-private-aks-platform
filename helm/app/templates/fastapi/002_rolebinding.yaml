@@ -1,0 +1,13 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: fastapi-rolebinding
+  namespace: {{ .Values.apps.namespace }}
+subjects:
+  - kind: ServiceAccount
+    name: fastapi-serviceaccount
+    namespace: {{ .Values.apps.namespace }}
+roleRef:
+  kind: Role
+  name: fastapi-role
+  apiGroup: rbac.authorization.k8s.io
