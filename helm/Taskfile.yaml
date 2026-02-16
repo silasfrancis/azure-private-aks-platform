@@ -6,7 +6,7 @@ env:
 
 tasks:
     
-  azure:01-connect-to-cluster:
+  azure:connect-to-cluster:
     cmd:
         |
         az aks get-credentials \
@@ -18,7 +18,7 @@ tasks:
 # kubectl config use-context <context-name>
   
 #Install External Secrets into cluster
-  1:install_external_secrets_for_vault:
+  azure:install_external_secrets_for_vault:
     cmd:
       |
       helm repo add external-secrets https://charts.external-secrets.io
@@ -30,8 +30,8 @@ tasks:
           #--set installCRDs=false
 
 # install gateway api controllers
-  1-azure-alb-controller:
-      desc: "Install azure alb controller with Gateway API support"
+  azure:install_alb-controller:
+      desc: Install azure alb controller with Gateway API support
       cmds:
         - kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/latest/download/standard-install.yaml
         - |
@@ -42,12 +42,15 @@ tasks:
           --version 1.9.13 \
           --set albController.namespace=${NAMESPACE} \
           --set albController.podIdentity.clientID=$MANAGED_IDENTITY_CLIENT_ID
+    
+  cert_manager:install:
+    desc: Install Cert Manager for TLS certificate configuration
+    cmd: kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.0/certmanager.yaml
 
 
 # Helm
   1:apply_namespace:
-    cmds: 
-      - kubectl apply -f app_namespace.yaml
+    cmd: kubectl apply -f 001_app_namespace.yaml
 
   2:apply_helm_config_for_app:
     cmd:
@@ -82,3 +85,9 @@ tasks:
   
   6:get_k8_kv_identity:
     cmd: echo $(az identity show --name ${VAULT_MANAGED_IDENTITY_NAME}  --resource-group ${RESOURCE_GROUP} --query clientId -o tsv)
+
+  7:apply_certificate_issuer:
+    cmd: kubectl apply -f 002_certificate_issuer.yaml
+
+  8:apply_certificate:
+    cmd: kubectl apply -f 003_certificate.yaml
