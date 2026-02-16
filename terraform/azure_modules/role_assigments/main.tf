@@ -1,3 +1,12 @@
+terraform {
+  required_providers {
+    azurerm = {
+      source = "hashicorp/azurerm"
+      version = "4.60.0"
+    }
+  }
+}
+
 data "azurerm_role_definition" "kv_user_role" {
   name = "Key Vault Secrets User"
 }

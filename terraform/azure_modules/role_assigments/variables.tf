@@ -1,0 +1,27 @@
+variable "resource_group_id" {
+  type = string
+}
+
+variable "key_vault_id" {
+  type = string
+}
+
+variable "acr_id" {
+  type = string
+}
+
+variable "aks_id" {
+  type = string
+}
+
+variable "vm_identity_id" {
+  type = string
+}
+
+variable "aks_identity_id" {
+  type = string
+}
+
+variable "alb_identity_id" {
+  type = string
+}
