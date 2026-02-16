@@ -5,4 +5,4 @@ metadata:
   annotations:
     konghq.com/gatewayclass-unmanaged: "true"
 spec:
-  controllerName: konghq.com/kic-gateway-controller
+  controllerName: alb.networking.azure.io/alb-controller

@@ -79,3 +79,6 @@ tasks:
         -f platform/values.yaml
         -n apps-namespace \
         --create-namespace
+  
+  6:get_k8_kv_identity:
+    cmd: echo $(az identity show --name ${VAULT_MANAGED_IDENTITY_NAME}  --resource-group ${RESOURCE_GROUP} --query clientId -o tsv)

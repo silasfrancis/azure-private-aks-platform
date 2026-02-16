@@ -6,10 +6,10 @@ apps:
     service: react-recoil-service
 
 gateway_class:
-  name: kong
+  name: azure-alb-external
 
 gateway:
-  name: kong_gateway_api
+  name: azure-external-gateway
 
 http_route:
   hostnames:

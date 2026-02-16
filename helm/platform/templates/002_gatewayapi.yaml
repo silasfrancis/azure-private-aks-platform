@@ -4,7 +4,7 @@ metadata:
   name: {{ .Values.gateway.name }}
   namespace: {{ .Values.apps.namespace }}
 spec:
-  gatewayClassName: kong
+  gatewayClassName: {{ .Values.gateway_class.name }}
   listeners:
     - name: http
       protocol: HTTP
