@@ -16,5 +16,3 @@ resource "azurerm_federated_identity_credential" "alb_federation" {
   issuer   = var.aks_oidc_issuer_url
   subject  = "system:serviceaccount:${var.alb_namespace}:alb-controller-sa"
 }
-
-#azure-alb-system
