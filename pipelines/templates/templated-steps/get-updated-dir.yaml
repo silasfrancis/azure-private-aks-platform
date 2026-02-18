@@ -1,0 +1,14 @@
+parameters:
+  - name: changedDir
+    type: string
+    default: ''
+
+steps:
+- displayName: Get Updated Dir
+  script: |
+    if echo "${{ parameters.changedDir }}" | grep -q "$(dir)"; then
+      echo "$(dir) was changed"
+      echo "##vso[task.setvariable variable=updated_dir]$(dir)"
+    else
+      echo "$(dir) not changed"
+    fi
