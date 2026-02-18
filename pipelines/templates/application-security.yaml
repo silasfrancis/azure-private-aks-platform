@@ -7,6 +7,7 @@ jobs:
 
 - job: semgrepScan
   dependsOn: filterDirectories
+  displayName: Run Semgrep Scan
   variables:
     CHANGED_DIR: $[dependencies.filterDirectories.outputs['getUpdatedDirectories.dir_changed']]
   strategy:
@@ -35,3 +36,38 @@ jobs:
       SEMGREP_APP_TOKEN: $(SEMGREP_APP_TOKEN)
 
       #  always lead with the step type (checkout, script, task, template) and put everything else after
+- job: dependencyScan
+  dependsOn: filterDirectories
+  displayName: OWASP Dependency Check
+  variables:
+    CHANGED_DIR: $[dependencies.filterDirectories.outputs['getUpdatedDirectories.dir_changed']]
+  strategy:
+    matrix:
+      backend:
+        dir: backend/fastapi
+      frontend:
+        dir: frontend/react-recoil
+  pool:
+    vmImage: ubuntu-24.04
+
+  steps:
+  - checkout: self
+    displayName: Checkout Code
+
+  - template: ./templated-steps/get-updated-dir.yaml
+    parameters:
+      changedDir: $(CHANGED_DIR)
+
+  - script: |
+      docker --version
+      mkdir -p $(Build.SourcesDirectory)/dependency-check-report
+      docker run --rm \
+        -v $(Build.SourcesDirectory):/repo \
+        -v $(Build.SourcesDirectory)/dependency-check-report:/report \
+        owasp/dependency-check:latest \
+        --scan /repo/$(updated_dir) \
+        --format HTML \
+        --failOnCVSS 7 \
+        --out /report
+    condition: and(succeeded(), ne(variables['updated_dir'], ''))
+    displayName: Run OWASP Dependency Check
