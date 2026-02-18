@@ -71,3 +71,9 @@ jobs:
         --out /report
     condition: and(succeeded(), ne(variables['updated_dir'], ''))
     displayName: Run OWASP Dependency Check
+
+  - task: PublishPipelineArtifact@1
+    inputs:
+      targetPath: '$(Build.SourcesDirectory)/dependency-check-report'
+      artifact: 'dependency-report'
+    displayName: Publish Dependency Report
