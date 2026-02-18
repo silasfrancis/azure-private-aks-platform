@@ -20,16 +20,18 @@ jobs:
   container: semgrep/semgrep
   
   steps:
-  - displayName: Checkout Code
-    checkout: self
+  - checkout: self
+    displayName: Checkout Code
 
   - template: ./templated-steps/get-updated-dir.yaml
     parameters:
       changedDir: $(CHANGED_DIR)
 
-  - displayName: Semgrep Scan
-    condition: and(succeeded(), ne(variables['updated_dir'], ''))
-    script: |
+  - script: |
       semgrep scan --config auto $(updated_dir)
+    displayName: Semgrep Scan
+    condition: and(succeeded(), ne(variables['updated_dir'], ''))
     env:
       SEMGREP_APP_TOKEN: $(SEMGREP_APP_TOKEN)
+
+      #  always lead with the step type (checkout, script, task, template) and put everything else after
