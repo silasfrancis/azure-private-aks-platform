@@ -1,0 +1,72 @@
+jobs:
+- template: ./filter-directories.yaml
+  parameters:
+    services: |
+      backend/fastapi
+      frontend/react-recoil
+
+- job: test
+  dependsOn: filterDirectories
+  displayName: Run unit tests
+  variables:
+    CHANGED_DIR: $[dependencies.filterDirectories.outputs['getUpdatedDirectories.dir_changed']]
+  strategy:
+    matrix:
+      backend:
+        dir: backend/fastapi
+      frontend:
+        dir: frontend/react-recoil
+  pool:
+    vmImage: ubuntu-24.04
+  steps:
+  - checkout: self
+    displayName: Checkout code
+  
+  - template: ../templated-steps/get-updated-dir.yaml
+    parameters:
+      changedDir: $(CHANGED_DIR)
+  
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: "3.12"
+    condition: contains(variables['updated_dir'], 'backend/fastapi')
+    displayName: Set up Python environment
+
+  - task: Cache@2
+    inputs:
+      key: 'python | "$(Agent.OS)" | $(updated_dir)/requirements.txt'
+      path: ~/.cache/pip
+    condition: contains(variables['updated_dir'], 'backend/fastapi')
+    displayName: Cache pip downloads
+
+  - task: UseNode@1
+    inputs:
+      version: ">=24.0.0"
+    condition: contains(variables['updated_dir'], 'frontend/react-recoil')
+    displayName: Set up Node environment
+  
+  - task: Cache@2
+    inputs:
+      key: 'yarn | "$(Agent.OS)" | $(Build.SourcesDirectory)/$(updated_dir)/yarn.lock'
+      path: $(updated_dir)/node_modules
+    condition: contains(variables['updated_dir'], 'frontend/react-recoil')
+    displayName: Cache node_modules
+  
+  - script: |
+     curl -sLf 'https://github.com/go-task/task/releases/download/v3.46.4/task_linux_amd64.tar.gz' \
+      | sudo tar -xz -C /usr/local/bin task
+     task --version
+    condition: ne(variables['updated_dir'], '')
+    displayName: Install Task CLI
+  
+  - script: |
+      cd $(updated_dir)
+      task install_dependencies_ci
+    condition: ne(variables['updated_dir'], '')
+    displayName: Install Dependencies
+
+  - script: |
+      cd $(updated_dir)
+      task test
+    condition: ne(variables['updated_dir'], '')
+    displayName: Run tests

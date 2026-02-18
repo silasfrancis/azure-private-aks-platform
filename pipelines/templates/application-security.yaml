@@ -24,7 +24,7 @@ jobs:
   - checkout: self
     displayName: Checkout Code
 
-  - template: ./templated-steps/get-updated-dir.yaml
+  - template: ../templated-steps/get-updated-dir.yaml
     parameters:
       changedDir: $(CHANGED_DIR)
 
@@ -54,7 +54,7 @@ jobs:
   - checkout: self
     displayName: Checkout Code
 
-  - template: ./templated-steps/get-updated-dir.yaml
+  - template: ../templated-steps/get-updated-dir.yaml
     parameters:
       changedDir: $(CHANGED_DIR)
 
