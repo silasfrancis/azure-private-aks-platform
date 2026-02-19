@@ -35,7 +35,6 @@ jobs:
     env:
       SEMGREP_APP_TOKEN: $(SEMGREP_APP_TOKEN)
 
-      #  always lead with the step type (checkout, script, task, template) and put everything else after
 - job: dependencyScan
   dependsOn: filterDirectories
   displayName: OWASP Dependency Check

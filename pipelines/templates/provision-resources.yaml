@@ -1,0 +1,42 @@
+parameters:
+  - name: azureSubscription
+    type: string
+
+jobs:
+- job: provisionTerraformResources
+  displayName: Provision Terraform Resources
+  pool:
+    vmImage: ubuntu-24.04
+  steps:
+  - checkout: self
+    displayName: Checkout Code
+
+  - task: TerraformInstaller@1
+    inputs:
+      terraformVersion: '1.10.5'
+
+  - script: |
+      terraform fmt -check
+    displayName: Terraform Format Check
+
+  - task: AzureCLI@2
+    inputs:
+      azureSubscription: ${{ parameters.azureSubscription }}
+      scriptType: bash
+      scriptLocation: inlineScript
+      inlineScript: |
+        az account show
+
+        BRANCH="$(Build.SourceBranchName)"
+        cd terraform/env/$BRANCH
+        terraform init
+        terraform plan -out=tfplan
+        terraform show -json tfplan > plan.json
+        terraform apply -auto-approve
+    displayName: Provision Terraform Resources
+
+  - task: PublishPipelineArtifact@1
+    inputs:
+      targetPath: terraform/env/$(Build.SourceBranchName)/plan.json
+      artifact: TerraformPlan
+    displayName: Publish Terraform Plan

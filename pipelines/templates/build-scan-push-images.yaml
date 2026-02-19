@@ -70,7 +70,6 @@ jobs:
       scriptType: bash
       scriptLocation: inlineScript
       inlineScript: |
-        echo "Logged in as:" 
         az account show
 
         if [ "$(isMain)" == "True" ]; then
