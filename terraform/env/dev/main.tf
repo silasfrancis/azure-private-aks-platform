@@ -101,7 +101,7 @@ module "role_assignments" {
     key_vault_id = module.key_vault.vault_id
     acr_id = module.acr.acr_id
     aks_id = module.aks.cluster_id
-    vm_identity_id = module.managed_identites.managed_identities["vm_identity"]
+    # vm_identity_id = module.managed_identites.managed_identities["vm_identity"]
     aks_identity_id = module.managed_identites.managed_identities["aks_identity"]
     alb_identity_id = module.managed_identites.managed_identities["alb_identity"]
 }

@@ -1,0 +1,8 @@
+trigger:
+- main
+
+stages: 
+
+- stage: applicationSecurity
+  jobs:
+    - template: templates/application-security.yaml

@@ -14,9 +14,9 @@ variable "aks_id" {
   type = string
 }
 
-variable "vm_identity_id" {
-  type = string
-}
+# variable "vm_identity_id" {
+#   type = string
+# }
 
 variable "aks_identity_id" {
   type = string

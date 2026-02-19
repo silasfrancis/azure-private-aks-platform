@@ -10,5 +10,6 @@ steps:
       echo "##vso[task.setvariable variable=updated_dir]$(dir)"
     else
       echo "$(dir) not changed"
+      exit 0
     fi
   displayName: Get Updated Dir

@@ -1,0 +1,129 @@
+parameters:
+  - name: azureSubscription
+    type: string
+
+jobs:
+- template: ./filter-directories.yaml
+  parameters:
+    services: |
+      backend/fastapi
+      frontend/react-recoil
+
+- job: buildAndPush
+  dependsOn: filterDirectories
+  displayName: Build and Push to ACR
+  variables:
+    CHANGED_DIR: $[dependencies.filterDirectories.outputs['getUpdatedDirectories.dir_changed']]
+    isMain: $[eq(variables['Build.SourceBranchName'], 'main')]
+    isDev: $[eq(variables['Build.SourceBranchName'], 'dev')]
+    arcMain: silasmain
+    arcDev: silasdev
+    GITHUB_PAT: $(GITHUB_PAT)
+  strategy:
+    matrix:
+      backend:
+        dir: backend/fastapi
+      frontend:
+        dir: frontend/react-recoil
+  pool:
+    vmImage: ubuntu-24.04
+  steps:
+  - checkout: self
+    displayName: Checkout Code
+
+  - template: ../templated-steps/get-updated-dir.yaml
+    parameters:
+      changedDir: $(CHANGED_DIR)
+
+  - script: |
+     curl -sLf 'https://github.com/go-task/task/releases/download/v3.46.4/task_linux_amd64.tar.gz' \
+      | sudo tar -xz -C /usr/local/bin task
+     task --version
+    condition: ne(variables['updated_dir'], '')
+    displayName: Install Task CLI
+
+  - script: |
+        if [ "$(isMain)" == "True" ]; then
+         tag=$(task -t utils/Taskfile.yaml generate-version -- "$(updated_dir)")
+        else
+         tag=$(task -t utils/Taskfile.yaml generate-extended-version -- "$(updated_dir)")
+        fi
+        echo "##vso[task.setvariable variable=image_tag]$tag"
+    condition: ne(variables['updated_dir'], '')
+    displayName: Generate image tag
+
+  - task: Cache@2
+    inputs:
+      key: 'trivy-db | "$(Agent.OS)"'
+      path: $(HOME)/.cache/trivy
+    displayName: Cache Trivy DB
+
+  - script: |
+      curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo sh -s -- -b /usr/local/bin
+      trivy --version
+    displayName: Install Trivy
+
+  - task: AzureCLI@2
+    inputs:
+      azureSubscription: ${{ parameters.azureSubscription }}
+      scriptType: bash
+      scriptLocation: inlineScript
+      inlineScript: |
+        echo "Logged in as:" 
+        az account show
+
+        if [ "$(isMain)" == "True" ]; then
+          acrName="$(arcMain)"
+          target="production"
+        else
+          acrName="$(arcDev)"
+          target="dev"
+        fi
+
+        az acr login --name "$acrName"
+        docker build -t "$acrName.azurecr.io/$(updated_dir):$(image_tag)" "$(updated_dir)" --target "$target"
+
+        trivy image \
+          --exit-code 1 \
+          --severity HIGH,CRITICAL \
+          --no-progress \
+          --cache-dir "$(HOME)/.cache/trivy" \
+          "$acrName.azurecr.io/$(updated_dir):$(image_tag)"
+
+        docker push "$acrName.azurecr.io/$(updated_dir):$(image_tag)"
+    displayName: Build, Scan and Push Docker Image
+
+  - script: |
+      echo "{\"service\":\"$(updated_dir)\",\"image_tag\":\"$(updated_dir):$(image_tag)\"}" > output.json
+    condition: ne(variables['updated_dir'], '')
+    displayName: export build info
+  
+  - script: |
+        if [ "$(isMain)" == "True" ]; then
+         TARGET_DIR="helm/app/env/main"
+        else
+         TARGET_DIR="helm/app/env/dev"
+        fi
+
+        if [ "$(updated_dir)" == "backend/fastapi" ]; then
+         TARGET_FILE="$TARGET_DIR/fastapi.json"
+        elif [ "$(updated_dir)" == "frontend/react-recoil" ]; then
+         TARGET_FILE="$TARGET_DIR/react-recoil.json"
+        else
+         echo "$(updated_dir) is not a supported path"
+         exit 1
+        fi
+
+        mkdir -p "$TARGET_DIR"
+        mv output.json "$TARGET_FILE"
+
+        git config user.name "Azure Pipeline"
+        git config user.email "pipeline@example.com"
+
+        git pull --rebase origin $(Build.SourceBranchName)
+        git add "$TARGET_FILE"
+        git commit -m "ci: update build info for $(updated_dir) $(Build.SourceBranchName)" || echo "No changes to commit"
+        
+        git push https://$(GITHUB_PAT)@github.com/username/repo.git $(Build.SourceBranchName)
+    condition: ne(variables['updated_dir'], '')
+    displayName: Persist build info to repo

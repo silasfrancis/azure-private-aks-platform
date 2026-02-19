@@ -13,21 +13,6 @@ tasks:
         echo "${TAG#${PREFIX}}"
     silent: true
 
-  generate-version-tag:
-    desc: "Combine the image repo with the version tag"
-    vars:
-      ARGS: "{{.CLI_ARGS}}"
-      SERVICE_RELEASE_TAG:
-        sh: echo "{{.ARGS}}" | awk '{print $1}'
-      IMAGE_REPO:
-        sh: echo "{{.ARGS}}" | awk '{print $2}'
-      ENVIRONMENT:
-        sh: echo "{{.ARGS}}" | awk '{print $3}'
-      VERSION:
-        sh: task -s generate-version -- {{.SERVICE_RELEASE_TAG}}
-    cmds:
-      - |
-       echo "{{.IMAGE_REPO}}{{.ENVIRONMENT}}:{{.VERSION}}"
 
   generate-extended-version:
     desc: "Emit X.Y.Z-000N-g<SHA> using generate-version as the base"
@@ -51,19 +36,3 @@ tasks:
         IFS='-' read -r BASE_VER COUNT GREF <<<"$GIT_VERSION"
         printf "%s-%04d-%s\n" "$BASE_VER" "$COUNT" "$GREF"
     silent: true
-
-  generate-extended-version-tag:
-    desc: "Combine the image repo with the version tag"
-    vars:
-      ARGS: "{{.CLI_ARGS}}"
-      SERVICE_RELEASE_TAG:
-        sh: echo "{{.ARGS}}" | awk '{print $1}'
-      IMAGE_REPO:
-        sh: echo "{{.ARGS}}" | awk '{print $2}'
-      ENVIRONMENT:
-        sh: echo "{{.ARGS}}" | awk '{print $3}'
-      VERSION:
-        sh: task -s generate-version -- {{.SERVICE_RELEASE_TAG}}
-    cmds:
-      - |
-       echo "{{.IMAGE_REPO}}{{.ENVIRONMENT}}:{{.VERSION}}"
