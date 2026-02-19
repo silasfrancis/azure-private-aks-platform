@@ -19,6 +19,7 @@ jobs:
     arcMain: silasmain
     arcDev: silasdev
     GITHUB_PAT: $(GITHUB_PAT)
+    REPO: silasfrancis/azure_private_cluster
   strategy:
     matrix:
       backend:
@@ -94,7 +95,7 @@ jobs:
     displayName: Build, Scan and Push Docker Image
 
   - script: |
-      echo "{\"service\":\"$(updated_dir)\",\"image_tag\":\"$(updated_dir):$(image_tag)\"}" > output.json
+      echo "{\"service\":\"$(updated_dir)\",\"image\":\"$(updated_dir):$(image_tag)\"}" > output.json
     condition: ne(variables['updated_dir'], '')
     displayName: export build info
   
@@ -124,6 +125,5 @@ jobs:
         git add "$TARGET_FILE"
         git commit -m "ci: update build info for $(updated_dir) $(Build.SourceBranchName)" || echo "No changes to commit"
         
-        git push https://$(GITHUB_PAT)@github.com/username/repo.git $(Build.SourceBranchName)
-    condition: ne(variables['updated_dir'], '')
+        git push https://$(GITHUB_PAT)@github.com/$(REPO).git $(Build.SourceBranchName)    condition: ne(variables['updated_dir'], '')
     displayName: Persist build info to repo
