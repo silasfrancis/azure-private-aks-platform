@@ -55,39 +55,26 @@ tasks:
   2:apply_helm_config_for_app:
     cmd:
         |
-         helm install app app \
+         helm upgrade --install app app \
           -f app/env/dev/values.yaml \
           -n apps-namespace \
-          --create-namespace
+          --create-namespace \
+          --wait --timeout 5m
 
   3:apply_platform_configs_for_app:
     cmd:
         |
-          helm install platform platform \
-          -f platform/values.yaml
+          helm upgrade --install platform platform \
+          -f platform/env/dev/values.yaml \
           -n apps-namespace \
-          --create-namespace
+          --create-namespace \
+          --wait --timeout 5m
 
-  4:apply_upgrade_to_app:
-    cmd: 
-      |
-       helm upgrade --install app app \
-        -f app/env/dev/values.yaml \
-        -n apps-namespace
-
-  5:apply_upgrade_to_platform_configs:
-    cmd: 
-      |
-        helm upgrade --install platform platform \
-        -f platform/values.yaml
-        -n apps-namespace \
-        --create-namespace
-  
-  6:get_k8_kv_identity:
+  4:get_k8_kv_identity:
     cmd: echo $(az identity show --name ${VAULT_MANAGED_IDENTITY_NAME}  --resource-group ${RESOURCE_GROUP} --query clientId -o tsv)
 
-  7:apply_certificate_issuer:
+  5:apply_certificate_issuer:
     cmd: kubectl apply -f 002_certificate_issuer.yaml
 
-  8:apply_certificate:
+  6:apply_certificate:
     cmd: kubectl apply -f 003_certificate.yaml
