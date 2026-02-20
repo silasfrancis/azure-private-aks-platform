@@ -20,9 +20,10 @@ resource "azurerm_storage_account" "tf_backend" {
       days = 30
     }
     restore_policy {
-      days = 60
+      days = 20
     }
     versioning_enabled = true 
+    change_feed_enabled = true
   }
 
   tags = {

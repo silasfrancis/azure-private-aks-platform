@@ -1,5 +1,5 @@
 resource "azurerm_network_security_group" "vm_security_group" {
-  name = vm-subnet-nsg
+  name = "vm-subnet-nsg"
   location = var.resource_group_location
   resource_group_name = var.resource_group_name
   tags = {
@@ -8,7 +8,7 @@ resource "azurerm_network_security_group" "vm_security_group" {
 }
 
 resource "azurerm_network_security_group" "aks_security_group" {
-  name = aks-subnet-nsg
+  name = "aks-subnet-nsg"
   location = var.resource_group_location
   resource_group_name = var.resource_group_name
   tags = {
@@ -18,7 +18,7 @@ resource "azurerm_network_security_group" "aks_security_group" {
 
 
 resource "azurerm_network_security_group" "db_security_group" {
-  name = db-subnet-nsg
+  name = "db-subnet-nsg"
   location = var.resource_group_location
   resource_group_name = var.resource_group_name
   tags = {

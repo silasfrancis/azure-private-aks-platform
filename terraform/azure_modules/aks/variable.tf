@@ -17,3 +17,7 @@ variable "aks_subnet_id" {
 variable "aks_managed_identity" {
   type = list(string)
 }
+
+variable "private_dns_zone_id" {
+  type = string
+}

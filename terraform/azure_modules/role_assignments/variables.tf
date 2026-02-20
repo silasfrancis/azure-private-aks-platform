@@ -14,14 +14,14 @@ variable "aks_id" {
   type = string
 }
 
-# variable "vm_identity_id" {
-#   type = string
-# }
-
-variable "aks_identity_id" {
+variable "vm_principal_id" {
   type = string
 }
 
-variable "alb_identity_id" {
+variable "aks_principal_id" {
+  type = string
+}
+
+variable "alb_principal_id" {
   type = string
 }

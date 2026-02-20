@@ -18,13 +18,8 @@ resource "azurerm_postgresql_flexible_server" "pg_server" {
   private_dns_zone_id           = var.private_dns_zone_id
   public_network_access_enabled = false
 
-  sku_name = "Standard_B1ms"                    
+  sku_name = "B_Standard_B1ms"                    
   storage_mb = 32768                           
-
-  high_availability {
-    mode = "Disabled"                          
-  }
-
 
   tags = {
     env = var.env

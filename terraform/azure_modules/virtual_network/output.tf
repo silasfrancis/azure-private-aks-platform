@@ -15,5 +15,8 @@ output "network_interface_id" {
 }
 
 output "private_dns_zone_id" {
-  value = azurerm_private_dns_zone.pg.id
+  value = {
+    pg = azurerm_private_dns_zone.pg.id
+    aks = azurerm_private_dns_zone.aks.id
+  }
 }

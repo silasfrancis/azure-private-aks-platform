@@ -2,8 +2,10 @@ version: "3"
 
 tasks:
   dev_runners:
-    cmd: ansible-playbook -i inventory.yml setup.yml --limit dev_runners
-  
+    cmd: |
+      # ansible all -i inventory.yaml -m ping
+      ansible-playbook -i inventory.yml setup.yml --limit dev_runners
+    
   main_runners:
     cmd: ansible-playbook -i inventory.yml setup.yml --limit main_runners
 
