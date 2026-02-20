@@ -12,7 +12,7 @@ jobs:
       frontend/react-recoil
     agent_pool: ${{ parameters.agent_pool }}
 
-- job: buildAndPush
+- job: buildScanAndPush
   dependsOn: filterDirectories
   displayName: Build and Push to ACR
   variables:
