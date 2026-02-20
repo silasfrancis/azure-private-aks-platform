@@ -11,7 +11,8 @@ resource "azurerm_postgresql_flexible_server" "pg_server" {
   name                = "${var.env}-pg-server"
   resource_group_name = var.resource_group_name
   location            = var.resource_group_location
-  version             = "14"                    
+  version             = "14"             
+  zone = "1"       
   administrator_login = var.db_username      
   administrator_password = var.db_password
   delegated_subnet_id           = var.db_subnet_id

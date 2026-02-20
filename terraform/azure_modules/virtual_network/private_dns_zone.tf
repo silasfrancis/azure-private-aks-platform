@@ -4,7 +4,7 @@ resource "azurerm_private_dns_zone" "pg" {
 }
 
 resource "azurerm_private_dns_zone" "aks" {
-  name                = "privatelink.eastus.azmk8s.io"
+  name                = "privatelink.eastus2.azmk8s.io"
   resource_group_name = var.resource_group_name
 }
 

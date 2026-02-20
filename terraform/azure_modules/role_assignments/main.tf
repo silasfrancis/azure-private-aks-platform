@@ -30,3 +30,11 @@ data "azurerm_role_definition" "k8_acr_pull_role"{
 data "azurerm_role_definition" "alb_network_role" {
   name = "Network Contributor"
 }
+
+data "azurerm_role_definition" "aks_dns_zone_role"{
+  name = "Private DNS Zone Contributor"
+}
+
+data "azurerm_role_definition" "aks_vnet_role"{
+  name = "Network Contributor"
+}

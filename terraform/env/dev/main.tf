@@ -35,8 +35,6 @@ module "managed_identites" {
   resource_group_location = module.resource_group.resource_group_location
   resource_group_name = module.resource_group.resource_group_name
   env = local.tag
-
-  depends_on = [ module.resource_group ]
 }
 
 module "key_vault" {
@@ -44,9 +42,8 @@ module "key_vault" {
 
   key_vault_name = "silas-dev-key-vault"
   resource_group_name = module.resource_group.resource_group_name
-
-  depends_on = [ module.resource_group ]
 }
+
 module "acr" {
   source = "../../azure_modules/acr"
 
@@ -62,7 +59,6 @@ module "virtual_network" {
   resource_group_name = module.resource_group.resource_group_name
   env = local.environment
   virtual_network_name = "${local.tag}-virtual-network"
-  depends_on = [ module.resource_group ]
 }
 
 module "virtual_machine" {
@@ -73,29 +69,6 @@ module "virtual_machine" {
   resource_group_name = module.resource_group.resource_group_name
   network_interface_ids = [module.virtual_network.network_interface_id]
   vm_managed_identity = [module.managed_identites.managed_identities_id["vm_identity"]]
-  depends_on = [ module.resource_group, module.virtual_network, module.managed_identites]
-}
-
-module "aks" {
-  source = "../../azure_modules/aks"
-
-  env = local.tag
-  resource_group_location = module.resource_group.resource_group_location
-  resource_group_name = module.resource_group.resource_group_name
-  aks_subnet_id = module.virtual_network.subnet_ids["aks_subnet"]
-  aks_managed_identity = [ module.managed_identites.managed_identities_id["aks_identity"] ]
-  private_dns_zone_id = module.virtual_network.private_dns_zone_id["aks"]
-  depends_on = [ module.resource_group, module.virtual_network, module.managed_identites]
-}
-
-module "authorization" {
-  source = "../../azure_modules/authorization"
-
-  resource_group_name = module.resource_group.resource_group_name
-  alb_identity_id = module.managed_identites.managed_identities_id["alb_identity"]
-  aks_oidc_issuer_url = module.aks.oidc_issuer_url
-  alb_namespace = "azure-alb-system"
-  depends_on = [ module.resource_group, module.managed_identites, module.aks]
 }
 
 module "postgres_server" {
@@ -109,7 +82,6 @@ module "postgres_server" {
   db_password = module.key_vault.db_password
   db_subnet_id = module.virtual_network.subnet_ids["db_subnet"]
   private_dns_zone_id = module.virtual_network.private_dns_zone_id["pg"]
-  depends_on = [ module.resource_group, module.key_vault, module.virtual_network]
 }
 
 module "role_assignments" {
@@ -118,11 +90,37 @@ module "role_assignments" {
     resource_group_id = module.resource_group.resource_group_id
     key_vault_id = module.key_vault.vault_id
     acr_id = module.acr.acr_id
-    aks_id = module.aks.cluster_id
+    vnet_id = module.virtual_network.vnet_id
+    aks_private_dns_zone_id = module.virtual_network.private_dns_zone_id["aks"]
     vm_principal_id = module.managed_identites.managed_identities_principal_id["vm_identity"]
     aks_principal_id = module.managed_identites.managed_identities_principal_id["aks_identity"]
     alb_principal_id = module.managed_identites.managed_identities_principal_id["alb_identity"]
-    depends_on = [ module.resource_group, module.acr, module.aks, module.virtual_machine, module.key_vault]
+}
+
+resource "time_sleep" "wait_for_iam" {
+  depends_on      = [module.role_assignments]
+  create_duration = "60s"
+}
+
+module "aks" {
+  source = "../../azure_modules/aks"
+
+  env = local.tag
+  resource_group_location = module.resource_group.resource_group_location
+  resource_group_name = module.resource_group.resource_group_name
+  aks_subnet_id = module.virtual_network.subnet_ids["aks_subnet"]
+  aks_managed_identity = [ module.managed_identites.managed_identities_id["aks_identity"] ]
+  private_dns_zone_id = module.virtual_network.private_dns_zone_id["aks"]
+  depends_on = [time_sleep.wait_for_iam]
+}
+
+module "authorization" {
+  source = "../../azure_modules/authorization"
+
+  resource_group_name = module.resource_group.resource_group_name
+  alb_identity_id = module.managed_identites.managed_identities_id["alb_identity"]
+  aks_oidc_issuer_url = module.aks.oidc_issuer_url
+  alb_namespace = "azure-alb-system"
 }
 
 module "storage" {
@@ -132,5 +130,4 @@ module "storage" {
   resource_group_location = module.resource_group.resource_group_location
   resource_group_name = module.resource_group.resource_group_name
   env = local.environment
-  depends_on = [ module.resource_group ]
 }

@@ -31,6 +31,8 @@ resource "azurerm_kubernetes_cluster" "k8_cluster" {
 network_profile {
     network_plugin    = "azure"
     load_balancer_sku = "standard"
+    service_cidr      = "10.1.0.0/16"
+    dns_service_ip    = "10.1.0.10"
   }
 
 
