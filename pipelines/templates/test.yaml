@@ -1,9 +1,14 @@
+parameters:
+  - name: agent_pool
+    type: string
+
 jobs:
 - template: ./filter-directories.yaml
   parameters:
     services: |
       backend/fastapi
       frontend/react-recoil
+    agent_pool: ${{ parameters.agent_pool }}
 
 - job: test
   dependsOn: filterDirectories
@@ -17,7 +22,7 @@ jobs:
       frontend:
         dir: frontend/react-recoil
   pool:
-    vmImage: ubuntu-24.04
+    name: ${{ parameters.agent_pool }}
   steps:
   - checkout: self
     displayName: Checkout code

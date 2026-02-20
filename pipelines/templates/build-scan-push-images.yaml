@@ -1,6 +1,8 @@
 parameters:
   - name: azureSubscription
     type: string
+  - name: agent_pool
+    type: string
 
 jobs:
 - template: ./filter-directories.yaml
@@ -8,6 +10,7 @@ jobs:
     services: |
       backend/fastapi
       frontend/react-recoil
+    agent_pool: ${{ parameters.agent_pool }}
 
 - job: buildAndPush
   dependsOn: filterDirectories
@@ -27,7 +30,7 @@ jobs:
       frontend:
         dir: frontend/react-recoil
   pool:
-    vmImage: ubuntu-24.04
+    name: ${{ parameters.agent_pool }}
   steps:
   - checkout: self
     displayName: Checkout Code

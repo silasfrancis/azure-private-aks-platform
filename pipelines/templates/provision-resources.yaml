@@ -1,12 +1,14 @@
 parameters:
   - name: azureSubscription
     type: string
+  - name: agent_pool
+    type: string
 
 jobs:
 - job: provisionTerraformResources
   displayName: Provision Terraform Resources
   pool:
-    vmImage: ubuntu-24.04
+    name: ${{ parameters.agent_pool }}
   steps:
   - checkout: self
     displayName: Checkout Code

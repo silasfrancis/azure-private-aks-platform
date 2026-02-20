@@ -2,12 +2,14 @@ parameters:
   - name: services
     type: string
     default: ''
+  - name: agent_pool
+    type: string
 
 jobs:
 - job: filterDirectories
   displayName: Filter only updated directories
   pool: 
-    vmImage: ubuntu-24.04
+    name: ${{ parameters.agent_pool }}
   variables:
     services: ${{ parameters.services }}
   steps:
