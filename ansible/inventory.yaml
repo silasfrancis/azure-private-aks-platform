@@ -1,0 +1,31 @@
+all:
+  children:
+
+    dev_runners:
+      vars:
+        azdevops_pool: "private-vm-pool-dev"
+        keyvault_name: "silas-dev-key-vault"
+        keyvault_secret_name: "DEV_RUNNER_PAT"
+        environment: "dev"
+      hosts:
+        vm1:
+          ansible_host: 10.0.0.1
+          ansible_user: azureuser
+          ansible_ssh_private_key_file: ansible/ansible-dev.pem
+
+    main_runners:
+      vars:
+        azdevops_pool: "private-vm-pool-main"
+        keyvault_name: "silas-main-key-vault"
+        keyvault_secret_name: "MAIN_RUNNER_PAT"
+        environment: "main"
+      hosts:
+        vm2:
+          ansible_host: 10.0.0.2
+          ansible_user: azureuser
+          ansible_ssh_private_key_file: ansible/ansible-main.pem
+
+    private_runners:
+      children:
+        dev_runners:
+        main_runners:

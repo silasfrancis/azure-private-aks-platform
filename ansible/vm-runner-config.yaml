@@ -1,0 +1,107 @@
+- name: Configure Azure DevOps Self-Hosted Agent
+  hosts: private_runners
+  become: true
+  vars:
+    azdevops_org: "silasfrancis"
+    azdevops_url: "https://dev.azure.com/{{ azdevops_org }}"
+    azdevops_agent_name: "{{ inventory_hostname }}"
+    agent_version: "3.248.0"
+    agent_user: "ansible_user"
+    agent_dir: "/opt/azagent"
+    agent_tar: "vsts-agent-linux-x64-{{ agent_version }}.tar.gz"
+    agent_url: "https://vstsagentpackage.azureedge.net/agent/{{ agent_version }}/{{ agent_tar }}"
+
+  tasks:
+
+    - name: Install required packages
+      apt:
+        name:
+          - curl
+          - tar
+          - libssl-dev
+          - libicu-dev
+          - azure-cli
+        state: present
+        update_cache: true
+
+    - name: Create agent directory
+      file:
+        path: "{{ agent_dir }}"
+        state: directory
+        owner: "{{ agent_user }}"
+        group: "{{ agent_user }}"
+        mode: "0755"
+
+    - name: Download Azure DevOps agent
+      get_url:
+        url: "{{ agent_url }}"
+        dest: "/tmp/{{ agent_tar }}"
+        mode: "0644"
+
+    - name: Extract agent tarball
+      unarchive:
+        src: "/tmp/{{ agent_tar }}"
+        dest: "{{ agent_dir }}"
+        remote_src: true
+        owner: "{{ agent_user }}"
+        group: "{{ agent_user }}"
+
+    - name: Login to Azure using Managed Identity
+      shell: az login --identity
+      changed_when: false
+
+    - name: Fetch PAT from Azure Key Vault
+      shell: |
+        az keyvault secret show \
+          --vault-name "{{ keyvault_name }}" \
+          --name "{{ keyvault_secret_name }}" \
+          --query "value" -o tsv
+      register: agent_pat
+      changed_when: false
+      no_log: true
+
+    - name: Check if agent is already configured
+      stat:
+        path: "{{ agent_dir }}/.agent"
+      register: agent_config
+
+    - name: Configure agent
+      become_user: "{{ agent_user }}"
+      shell: |
+        {{ agent_dir }}/config.sh \
+          --unattended \
+          --url {{ azdevops_url }} \
+          --auth pat \
+          --token {{ agent_pat.stdout }} \
+          --pool "{{ azdevops_pool }}" \
+          --agent "{{ azdevops_agent_name }}" \
+          --work "_work" \
+          --replace \
+          --acceptTeeEula
+      args:
+        chdir: "{{ agent_dir }}"
+      when: not agent_config.stat.exists
+      no_log: true
+
+    - name: Install agent as a systemd service
+      shell: "{{ agent_dir }}/svc.sh install {{ agent_user }}"
+      args:
+        chdir: "{{ agent_dir }}"
+      when: not agent_config.stat.exists
+
+    - name: Start agent service
+      shell: "{{ agent_dir }}/svc.sh start"
+      args:
+        chdir: "{{ agent_dir }}"
+      when: not agent_config.stat.exists
+
+    - name: Ensure agent service is enabled and running
+      systemd:
+        name: "vsts.agent.{{ azdevops_org }}.{{ azdevops_pool }}.{{ azdevops_agent_name }}"
+        enabled: true
+        state: started
+
+    - name: Remove downloaded tarball
+      file:
+        path: "/tmp/{{ agent_tar }}"
+        state: absent

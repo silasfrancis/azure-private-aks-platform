@@ -1,0 +1,11 @@
+version: "3"
+
+tasks:
+  dev_runners:
+    cmd: ansible-playbook -i inventory.yml setup.yml --limit dev_runners
+  
+  main_runners:
+    cmd: ansible-playbook -i inventory.yml setup.yml --limit main_runners
+
+  private_runners:
+    cmd: ansible-playbook -i inventory.yml setup.yml --limit private_runners
