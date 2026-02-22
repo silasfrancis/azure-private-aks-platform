@@ -24,4 +24,4 @@ apps:
 external_secrets:
   secret_store_name: azure-store
   vault_uri: https://silas-dev-key-vault.vault.azure.net
-  managed_identity_id: 
+  managed_identity_id: e47f0b7f-cbe2-46d4-a9fd-cd4dd77c1446

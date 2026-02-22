@@ -13,7 +13,7 @@ data "azurerm_ssh_public_key" "ansible_ssh_key" {
 }
 
 resource "azurerm_linux_virtual_machine" "vm" {
-  name = "CIPrivateRunner"
+  name = "private-${var.env}-runner"
   resource_group_name = var.resource_group_name
   location = var.resource_group_location
   network_interface_ids = var.network_interface_ids

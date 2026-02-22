@@ -1,10 +1,10 @@
 terraform {
-  # backend "azurerm" {
-  #   resource_group_name  = 
-  #   storage_account_name = azurerm_storage_account.tf_backend.name
-  #   container_name       = azurerm_storage_container.tf_state.name
-  #   key                  = "terraform.tfstate"
-  # }
+  backend "azurerm" {
+    resource_group_name  = "dev"
+    storage_account_name = "silasdevstorage"
+    container_name       = "devtfstate"
+    key                  = "terraform.tfstate"
+  }
 
   required_providers {
     azurerm = {

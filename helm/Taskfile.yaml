@@ -1,8 +1,12 @@
 version: "3"
 
 env:
-  AZURE_REGION: East US
+  AZURE_REGION: eastus2
   NAMESPACE: azure-alb-system
+  RESOURCE_GROUP: dev
+  CLUSTER_NAME: silasdev-k8-cluster
+  VAULT_MANAGED_IDENTITY_NAME: silasdev-aks-identity
+
 
 tasks:
     
@@ -12,10 +16,6 @@ tasks:
         az aks get-credentials \
         --resource-group ${RESOURCE_GROUP} \
         --name ${CLUSTER_NAME}
-
-# kubectl config current-context
-# kubectl config get-contexts
-# kubectl config use-context <context-name>
   
 #Install External Secrets into cluster
   azure:install_external_secrets_for_vault:
