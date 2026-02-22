@@ -16,7 +16,12 @@ jobs:
   steps:
   - checkout: self
     displayName: Checkout Code
-
+  
+  - task: HelmInstaller@1
+    displayName: Helm installer
+    inputs: 
+      helmVersionToInstall: latest
+      
   - task: AzureCLI@2
     inputs:
       azureSubscription: ${{ parameters.azureSubscription }}
