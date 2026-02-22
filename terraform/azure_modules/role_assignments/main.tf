@@ -38,3 +38,7 @@ data "azurerm_role_definition" "aks_dns_zone_role"{
 data "azurerm_role_definition" "aks_vnet_role"{
   name = "Network Contributor"
 }
+
+data "azurerm_role_definition" "kublect_id_assign_role"{
+  name = "Managed Identity Operator"
+}

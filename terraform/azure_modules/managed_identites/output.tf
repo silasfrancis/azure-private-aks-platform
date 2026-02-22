@@ -15,3 +15,11 @@ output "managed_identities_id" {
     alb_identity = azurerm_user_assigned_identity.alb_identity.id
   }
 }
+
+output "kubelet_identities" {
+  value = {
+    kubelet_identity_client_id = azurerm_user_assigned_identity.aks_identity.client_id
+    kubelet_identity_object_id = azurerm_user_assigned_identity.aks_identity.principal_id
+    kubelet_identity_resource_id = azurerm_user_assigned_identity.aks_identity.id
+  }
+}

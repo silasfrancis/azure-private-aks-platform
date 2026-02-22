@@ -21,3 +21,15 @@ variable "aks_managed_identity" {
 variable "private_dns_zone_id" {
   type = string
 }
+
+variable "kubelet_identity_client_id" {
+  type = string
+}
+
+variable "kubelet_identity_object_id" {
+  type = string
+}
+
+variable "kubelet_identity_resource_id" {
+  type = string
+}

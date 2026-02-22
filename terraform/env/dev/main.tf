@@ -93,10 +93,12 @@ module "role_assignments" {
     key_vault_id = module.key_vault.vault_id
     acr_id = module.acr.acr_id
     vnet_id = module.virtual_network.vnet_id
+    aks_identity_id = module.managed_identites.managed_identities_id["aks_identity"]
     aks_private_dns_zone_id = module.virtual_network.private_dns_zone_id["aks"]
     vm_principal_id = module.managed_identites.managed_identities_principal_id["vm_identity"]
     aks_principal_id = module.managed_identites.managed_identities_principal_id["aks_identity"]
     alb_principal_id = module.managed_identites.managed_identities_principal_id["alb_identity"]
+    depends_on = [ module.managed_identites ]
 }
 
 resource "time_sleep" "wait_for_iam" {
@@ -113,6 +115,9 @@ module "aks" {
   aks_subnet_id = module.virtual_network.subnet_ids["aks_subnet"]
   aks_managed_identity = [ module.managed_identites.managed_identities_id["aks_identity"] ]
   private_dns_zone_id = module.virtual_network.private_dns_zone_id["aks"]
+  kubelet_identity_client_id = module.managed_identites.kubelet_identities["kubelet_identity_client_id"]
+  kubelet_identity_object_id = module.managed_identites.kubelet_identities["kubelet_identity_object_id"]
+  kubelet_identity_resource_id = module.managed_identites.kubelet_identities["kubelet_identity_resource_id"]
   depends_on = [time_sleep.wait_for_iam]
 }
 

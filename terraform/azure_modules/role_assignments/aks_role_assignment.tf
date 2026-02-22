@@ -21,3 +21,9 @@ resource "azurerm_role_assignment" "aks_vnet_network_role" {
   role_definition_id = data.azurerm_role_definition.aks_vnet_role.id
   principal_id       = var.aks_principal_id
 }
+
+resource "azurerm_role_assignment" "aks_kublet_id_assign_role" {
+  scope              = var.aks_identity_id
+  role_definition_id = data.azurerm_role_definition.kublect_id_assign_role.id
+  principal_id       = var.aks_principal_id
+}

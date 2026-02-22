@@ -22,6 +22,10 @@ variable "alb_principal_id" {
   type = string
 }
 
+variable "aks_identity_id" {
+  type = string
+}
+
 variable "aks_private_dns_zone_id" {
   type = string
 }

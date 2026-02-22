@@ -39,6 +39,12 @@ network_profile {
     type = "UserAssigned"
     identity_ids = var.aks_managed_identity
   }
+  
+  kubelet_identity {
+    client_id                 = var.kubelet_identity_client_id
+    object_id                 = var.kubelet_identity_object_id
+    user_assigned_identity_id = var.kubelet_identity_resource_id
+  }
 
   tags = {
     env = var.env
