@@ -68,7 +68,7 @@ module "virtual_machine" {
   resource_group_location = module.resource_group.resource_group_location
   resource_group_name = module.resource_group.resource_group_name
   private_network_interface_id = [module.virtual_network.network_interface_id["private_interface"]]
-  public_network_interface_ids = [module.virtual_network.network_interface_id["private_interface"]]
+  public_network_interface_ids = [module.virtual_network.network_interface_id["public_interface"]]
   vm_managed_identity = [module.managed_identites.managed_identities_id["vm_identity"]]
 }
 

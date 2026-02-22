@@ -42,7 +42,7 @@ resource "azurerm_linux_virtual_machine" "runner_vm" {
 }
 
 resource "azurerm_linux_virtual_machine" "jump_host_vm" {
-  name = "private-${var.env}-runner"
+  name = "jumphost-${var.env}"
   resource_group_name = var.resource_group_name
   location = var.resource_group_location
   network_interface_ids = var.public_network_interface_ids
