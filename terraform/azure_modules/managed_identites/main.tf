@@ -13,6 +13,12 @@ resource "azurerm_user_assigned_identity" "vm_identity" {
   resource_group_name = var.resource_group_name
 }
 
+resource "azurerm_user_assigned_identity" "jump_host_vm_identity" {
+  name = "${var.env}-jump-host-vm-identity"
+  location = var.resource_group_location
+  resource_group_name = var.resource_group_name
+}
+
 resource "azurerm_user_assigned_identity" "aks_identity" {
   name = "${var.env}-aks-identity"
   location = var.resource_group_location

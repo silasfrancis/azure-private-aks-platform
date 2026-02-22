@@ -70,6 +70,7 @@ module "virtual_machine" {
   private_network_interface_id = [module.virtual_network.network_interface_id["private_interface"]]
   public_network_interface_ids = [module.virtual_network.network_interface_id["public_interface"]]
   vm_managed_identity = [module.managed_identites.managed_identities_id["vm_identity"]]
+  jumphost_vm_managed_identity = [module.managed_identites.managed_identities_id["jump_host_vm_identity"]]
 }
 
 module "postgres_server" {
@@ -91,7 +92,6 @@ module "role_assignments" {
     resource_group_id = module.resource_group.resource_group_id
     key_vault_id = module.key_vault.vault_id
     acr_id = module.acr.acr_id
-    aks_id = module.aks.cluster_id
     vnet_id = module.virtual_network.vnet_id
     aks_private_dns_zone_id = module.virtual_network.private_dns_zone_id["aks"]
     vm_principal_id = module.managed_identites.managed_identities_principal_id["vm_identity"]
@@ -123,6 +123,14 @@ module "authorization" {
   alb_identity_id = module.managed_identites.managed_identities_id["alb_identity"]
   aks_oidc_issuer_url = module.aks.oidc_issuer_url
   alb_namespace = "azure-alb-system"
+}
+
+module "role_assignments_jumphost" {
+  source = "../../azure_modules/role_assignments_jump_host"
+
+  aks_id = module.aks.cluster_id
+  jump_host_vm_principal_id =  module.managed_identites.managed_identities_principal_id["jump_host_vm_identity"]
+  key_vault_id = module.key_vault.vault_id
 }
 
 module "storage" {

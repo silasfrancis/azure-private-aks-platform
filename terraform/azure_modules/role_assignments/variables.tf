@@ -10,10 +10,6 @@ variable "acr_id" {
   type = string
 }
 
-variable "aks_id" {
-  type = string
-}
-
 variable "vm_principal_id" {
   type = string
 }

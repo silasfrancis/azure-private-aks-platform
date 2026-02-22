@@ -65,7 +65,7 @@ resource "azurerm_linux_virtual_machine" "jump_host_vm" {
   }
   identity {
     type = "UserAssigned"
-    identity_ids = var.vm_managed_identity
+    identity_ids = var.jumphost_vm_managed_identity
   }
 
 }

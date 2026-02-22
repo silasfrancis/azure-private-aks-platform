@@ -22,3 +22,7 @@ variable "public_network_interface_ids" {
 variable "vm_managed_identity" {
   type = list(string)
 }
+
+variable "jumphost_vm_managed_identity" {
+  type = list(string)
+}
