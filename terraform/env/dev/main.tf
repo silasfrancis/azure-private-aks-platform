@@ -91,6 +91,7 @@ module "role_assignments" {
     resource_group_id = module.resource_group.resource_group_id
     key_vault_id = module.key_vault.vault_id
     acr_id = module.acr.acr_id
+    aks_id = module.aks.cluster_id
     vnet_id = module.virtual_network.vnet_id
     aks_private_dns_zone_id = module.virtual_network.private_dns_zone_id["aks"]
     vm_principal_id = module.managed_identites.managed_identities_principal_id["vm_identity"]
