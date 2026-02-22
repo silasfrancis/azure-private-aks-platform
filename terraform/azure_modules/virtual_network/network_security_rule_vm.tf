@@ -6,7 +6,7 @@ resource "azurerm_network_security_rule" "vm-ngs-ingress" {
   protocol = "Tcp"
   source_port_range = "*"
   destination_port_range = "22"
-  source_address_prefix      = "102.91.96.196"  #my public ip address
+  source_address_prefix      = "*"
   destination_address_prefix = "*"
   resource_group_name = var.resource_group_name
   network_security_group_name = azurerm_network_security_group.vm_security_group.name

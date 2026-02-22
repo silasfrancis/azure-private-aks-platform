@@ -11,7 +11,10 @@ output "subnet_ids" {
 }
 
 output "network_interface_id" {
-  value = azurerm_network_interface.vm_nic.id
+  value = {
+    private_interface = azurerm_network_interface.vm_nic_private.id
+    public_interface = azurerm_network_interface.vm_nic_public.id
+  }
 }
 
 output "private_dns_zone_id" {
@@ -19,4 +22,8 @@ output "private_dns_zone_id" {
     pg = azurerm_private_dns_zone.pg.id
     aks = azurerm_private_dns_zone.aks.id
   }
+}
+
+output "jump_host_public_ip" {
+  value = azurerm_public_ip.jump_host_ip.ip_address
 }
