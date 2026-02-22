@@ -24,6 +24,9 @@
         state: present
         update_cache: true
 
+    - name: Install Azure cli
+      shell: curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+
     - name: Create agent directory
       file:
         path: "{{ agent_dir }}"
