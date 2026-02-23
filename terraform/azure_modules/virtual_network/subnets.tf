@@ -36,7 +36,7 @@ resource "azurerm_subnet" "alb_subnet" {
   name                 = "${var.env}Albsubnet"
   resource_group_name  = var.resource_group_name
   virtual_network_name = azurerm_virtual_network.virtual_network.name
-  address_prefixes     = ["10.0.4.0/24"]  # make sure this doesn't overlap existing subnets
+  address_prefixes     = ["10.0.4.0/24"]  
 
   delegation {
     name = "alb-delegation"

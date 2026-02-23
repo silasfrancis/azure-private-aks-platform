@@ -25,3 +25,13 @@ resource "azurerm_network_security_group" "db_security_group" {
     env = var.env
   }
 }
+
+resource "azurerm_network_security_group" "alb_security_group" {
+  name                = "${var.env}-alb-nsg"
+  location            = var.resource_group_location
+  resource_group_name = var.resource_group_name
+    tags = {
+    env = var.env
+  }
+}
+

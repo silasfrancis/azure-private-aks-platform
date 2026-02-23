@@ -31,6 +31,10 @@ data "azurerm_role_definition" "alb_network_role" {
   name = "Network Contributor"
 }
 
+data "azurerm_role_definition" "alb_reader_role" {
+  name = "Reader"
+}
+
 data "azurerm_role_definition" "aks_dns_zone_role"{
   name = "Private DNS Zone Contributor"
 }

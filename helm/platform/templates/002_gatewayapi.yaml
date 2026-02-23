@@ -3,6 +3,9 @@ kind: Gateway
 metadata:
   name: {{ .Values.gateway.name }}
   namespace: {{ .Values.apps.namespace }}
+  annotations:
+    alb.networking.azure.io/alb-namespace: azure-alb-system
+    alb.networking.azure.io/alb-name: azure-alb
 spec:
   gatewayClassName: {{ .Values.gateway_class.name }}
   listeners:
