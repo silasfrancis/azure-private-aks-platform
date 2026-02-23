@@ -7,7 +7,7 @@ spec:
   hostnames:
     - {{ .Values.http_route.hostnames.api }}
   parentRefs:
-    - name: app-gateway
+    - name: {{ .Values.gateway.name }}
   rules:
     - matches:
         - path:
