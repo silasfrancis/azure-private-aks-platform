@@ -15,7 +15,7 @@ spec:
     healthyThreshold: 1
     unhealthyThreshold: 3
     http:
-      path: /
+      path: /api/health-check
       match:
         statusCodes:
         - start: 200

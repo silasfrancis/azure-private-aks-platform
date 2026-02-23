@@ -1,3 +1,31 @@
+resource "azurerm_network_security_rule" "aks_allow_alb_inbound_react" {
+  name                        = "AllowALBInboundReact"
+  priority                    = 260
+  direction                   = "Inbound"
+  access                      = "Allow"
+  protocol                    = "Tcp"
+  source_port_range           = "*"
+  destination_port_range      = "3000"
+  source_address_prefix       = azurerm_subnet.alb_subnet.address_prefixes[0]
+  destination_address_prefix  = "*"
+  resource_group_name         = var.resource_group_name
+  network_security_group_name = azurerm_network_security_group.aks_security_group.name
+}
+
+resource "azurerm_network_security_rule" "aks_allow_alb_inbound_api" {
+  name                        = "AllowALBInboundAPI"
+  priority                    = 250
+  direction                   = "Inbound"
+  access                      = "Allow"
+  protocol                    = "Tcp"
+  source_port_range           = "*"
+  destination_port_range      = "8080"
+  source_address_prefix       = azurerm_subnet.alb_subnet.address_prefixes[0]
+  destination_address_prefix  = "*"
+  resource_group_name         = var.resource_group_name
+  network_security_group_name = azurerm_network_security_group.aks_security_group.name
+}
+
 resource "azurerm_network_security_rule" "aks_allow_control_plane" {
   name                        = "AllowK8sControlPlane"
   priority                    = 100

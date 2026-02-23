@@ -9,9 +9,9 @@ all:
         environment: "dev"
       hosts:
         vm1:
-          ansible_host: 10.0.0.1
-          ansible_user: azureuser
-          ansible_ssh_private_key_file: ansible/ansible-dev.pem
+          ansible_host: 10.0.1.5
+          ansible_user: ansible_user
+          ansible_ssh_private_key_file: ~/.ssh/ansible-dev.pem
 
     main_runners:
       vars:
@@ -21,9 +21,9 @@ all:
         environment: "main"
       hosts:
         vm2:
-          ansible_host: 10.0.0.2
-          ansible_user: azureuser
-          ansible_ssh_private_key_file: ansible/ansible-main.pem
+          ansible_host: 10.0.1.8
+          ansible_user: ansible_user
+          ansible_ssh_private_key_file: ~/.ssh/ansible-main.pem
 
     private_runners:
       children:
