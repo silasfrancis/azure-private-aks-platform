@@ -5,39 +5,39 @@ stages:
 
 - stage: applicationSecurity
   jobs:
-    - template: pipelines/templates/application-security.yaml
+    - template: ../../templates/application-security.yaml
       parameters:
         agent_pool: private-vm-pool-dev
 
 - stage: unitTest
   jobs: 
-    - template: pipelines/templates/test.yaml
+    - template: ../../templates/test.yaml
       parameters:
         agent_pool: private-vm-pool-dev
 
 - stage: buildScanAndPush
   jobs: 
-    - template: pipelines/templates/build-scan-push-images.yaml
+    - template: ../../templates/build-scan-push-images.yaml
       parameters:
         azureSubscription: dev-oidc-connection
         agent_pool: private-vm-pool-dev
 
 - stage: updateHelmManifests
   jobs: 
-    - template: pipelines/templates/update-helm-manifests.yaml
+    - template: ../../templates/update-helm-manifests.yaml
       parameters:
         agent_pool: private-vm-pool-dev
 
 - stage: provisionTerraformResources
   jobs: 
-    - template: pipelines/templates/provision-resources.yaml
+    - template: ../../templates/provision-resources.yaml
       parameters:
         azureSubscription: dev-oidc-connection
         agent_pool: private-vm-pool-dev
 
 - stage: installHelmChartInCluster
   jobs: 
-    - template: pipelines/templates/provision-resources.yaml
+    - template: ../../templates/provision-resources.yaml
       parameters:
         azureSubscription: dev-oidc-connection
         cluster_name: 
