@@ -5,12 +5,12 @@
     azdevops_org: "silasfrancis"
     azdevops_url: "https://dev.azure.com/{{ azdevops_org }}"
     azdevops_agent_name: "{{ inventory_hostname }}"
-    agent_version: "3.248.0"
+    agent_version: "4.268.0"
     agent_user: "ansible_user"
     agent_dir: "/opt/azagent"
     agent_tar: "vsts-agent-linux-x64-{{ agent_version }}.tar.gz"
-    agent_url: "https://vstsagentpackage.azureedge.net/agent/{{ agent_version }}/{{ agent_tar }}"
-
+    agent_url: "https://download.agent.dev.azure.com/agent/{{ agent_version }}/{{ agent_tar }}"
+    
   tasks:
 
     - name: Install required packages
