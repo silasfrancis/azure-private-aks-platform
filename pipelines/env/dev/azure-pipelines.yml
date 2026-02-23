@@ -37,7 +37,7 @@ stages:
 
 - stage: installHelmChartInCluster
   jobs: 
-    - template: ../../templates/provision-resources.yaml
+    - template: ../../templates/kubernetes-helm-install.yaml
       parameters:
         azureSubscription: dev-oidc-connection
         cluster_name: silasdev-k8-cluster

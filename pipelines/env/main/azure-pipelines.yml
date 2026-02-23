@@ -5,39 +5,39 @@ stages:
 
 - stage: applicationSecurity
   jobs:
-    - template: templates/application-security.yaml
+    - template: ../../templates/application-security.yaml
       parameters:
         agent_pool: private-vm-pool-main
 
 - stage: unitTest
   jobs: 
-    - template: templates/test.yaml
+    - template: ../../templates/test.yaml
       parameters:
         agent_pool: private-vm-pool-main
 
 - stage: buildScanAndPush
   jobs: 
-    - template: templates/build-scan-push-images.yaml
+    - template: ../../templates/build-scan-push-images.yaml
       parameters:
         azureSubscription: main-oidc-connection
         agent_pool: private-vm-pool-main
 
 - stage: updateHelmManifests
   jobs: 
-    - template: /templates/update-helm-manifests.yaml
+    - template: ../../templates/update-helm-manifests.yaml
       parameters:
         agent_pool: private-vm-pool-main
 
 - stage: provisionTerraformResources
   jobs: 
-    - template: templates/provision-resources.yaml
+    - template: ../../templates/provision-resources.yaml
       parameters:
         azureSubscription: main-oidc-connection
         agent_pool: private-vm-pool-main
 
 - stage: installHelmChartInCluster
   jobs: 
-    - template: templates/provision-resources.yaml
+    - template: ../../templates/kubernetes-helm-install.yaml
       parameters:
         azureSubscription: main-oidc-connection
         cluster_name: silasmain-k8-cluster
