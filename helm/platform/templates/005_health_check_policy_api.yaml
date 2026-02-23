@@ -1,0 +1,23 @@
+apiVersion: alb.networking.azure.io/v1
+kind: HealthCheckPolicy
+metadata:
+  name: fastapi-health-policy
+  namespace: apps-namespace
+spec:
+  targetRef:
+    group: ""
+    kind: Service
+    name: fastapi-service
+    namespace: apps-namespace
+  default:
+    interval: 30s
+    timeout: 10s
+    healthyThreshold: 1
+    unhealthyThreshold: 3
+    http:
+      host: api.lefrancis.org
+      path: /
+      match:
+        statusCodes:
+        - start: 200
+          end: 299

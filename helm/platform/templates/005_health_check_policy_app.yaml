@@ -1,0 +1,23 @@
+apiVersion: alb.networking.azure.io/v1
+kind: HealthCheckPolicy
+metadata:
+  name: react-health-policy
+  namespace: apps-namespace
+spec:
+  targetRef:
+    group: ""
+    kind: Service
+    name: react-recoil-service
+    namespace: apps-namespace
+  default:
+    interval: 30s
+    timeout: 10s
+    healthyThreshold: 1
+    unhealthyThreshold: 3
+    http:
+      host: app.lefrancis.org
+      path: /
+      match:
+        statusCodes:
+        - start: 200
+          end: 299
