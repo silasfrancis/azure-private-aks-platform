@@ -10,3 +10,6 @@ variable "jump_host_vm_principal_id" {
   type = string
 }
 
+variable "resource_group_id" {
+  type = string
+}

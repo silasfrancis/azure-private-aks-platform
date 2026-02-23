@@ -31,3 +31,18 @@ resource "azurerm_subnet" "db_subnet" {
     }
   }
 }
+
+resource "azurerm_subnet" "alb_subnet" {
+  name                 = "${var.env}Albsubnet"
+  resource_group_name  = var.resource_group_name
+  virtual_network_name = azurerm_virtual_network.virtual_network.name
+  address_prefixes     = ["10.0.4.0/24"]  # make sure this doesn't overlap existing subnets
+
+  delegation {
+    name = "alb-delegation"
+    service_delegation {
+      name    = "Microsoft.ServiceNetworking/trafficControllers"
+      actions = ["Microsoft.Network/virtualNetworks/subnets/join/action"]
+    }
+  }
+}

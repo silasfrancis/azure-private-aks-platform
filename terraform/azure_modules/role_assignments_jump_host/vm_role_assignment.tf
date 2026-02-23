@@ -9,3 +9,9 @@ resource "azurerm_role_assignment" "vm_aks_access" {
   role_definition_id = data.azurerm_role_definition.vm_jumphost_aks_role.id
   principal_id = var.jump_host_vm_principal_id  
 }
+
+resource "azurerm_role_assignment" "vm_mi_reader" {
+  scope = var.resource_group_id
+  role_definition_id = data.azurerm_role_definition.vm_jumphost_mi_role.id
+  principal_id = var.jump_host_vm_principal_id  
+}

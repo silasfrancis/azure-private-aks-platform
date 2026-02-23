@@ -15,3 +15,6 @@ http_route:
   hostnames:
     api: "api.lefrancis.org"
     app: "app.lefrancis.org"
+
+alb:
+  subnet_association: /subscriptions/5cc67dc2-fdf9-4540-b998-efc00d36c79e/resourceGroups/dev/providers/Microsoft.Network/virtualNetworks/silasdev-virtual-network/subnets/devAlbsubnet

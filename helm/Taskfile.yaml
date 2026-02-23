@@ -5,7 +5,7 @@ env:
   NAMESPACE: azure-alb-system
   RESOURCE_GROUP: dev
   CLUSTER_NAME: silasdev-k8-cluster
-  VAULT_MANAGED_IDENTITY_NAME: silasdev-aks-identity
+  ALB_MANAGED_IDENTITY_NAME: silasdev-alb-identity
 
 
 tasks:
@@ -35,7 +35,7 @@ tasks:
       cmds:
         - kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/latest/download/standard-install.yaml
         - |
-          MANAGED_IDENTITY_CLIENT_ID=$(az identity show   --name ${MANAGED_IDENTITY_NAME}  --resource-group ${RESOURCE_GROUP} --query clientId -o tsv)
+          MANAGED_IDENTITY_CLIENT_ID=$(az identity show   --name ${ALB_MANAGED_IDENTITY_NAME}  --resource-group ${RESOURCE_GROUP} --query clientId -o tsv)
           helm install alb-controller oci://mcr.microsoft.com/application-lb/charts/alb-controller \
           --namespace ${NAMESPACE} \
           --create-namespace \

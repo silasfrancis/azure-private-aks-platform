@@ -14,3 +14,7 @@ data "azurerm_role_definition" "kv_jumphost_user_role" {
 data "azurerm_role_definition" "vm_jumphost_aks_role" {
   name = "Azure Kubernetes Service Cluster User Role"
 }
+
+data "azurerm_role_definition" "vm_jumphost_mi_role" {
+  name = "Managed Identity Operator"
+}

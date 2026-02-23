@@ -7,6 +7,7 @@ output "subnet_ids" {
     vm_subnet = azurerm_subnet.vm_subnet.id
     aks_subnet = azurerm_subnet.aks_subnet.id
     db_subnet = azurerm_subnet.db_subnet.id
+    alb_subnet = azurerm_subnet.alb_subnet.id
   }
 }
 

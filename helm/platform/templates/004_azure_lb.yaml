@@ -1,0 +1,8 @@
+apiVersion: alb.networking.azure.io/v1
+kind: ApplicationLoadBalancer
+metadata:
+  name: azure-alb
+  namespace: azure-alb-system
+spec:
+  associations:
+  - {{ .Values.alb.subnet_association }}

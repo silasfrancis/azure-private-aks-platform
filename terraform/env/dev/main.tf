@@ -136,6 +136,7 @@ module "role_assignments_jumphost" {
   aks_id = module.aks.cluster_id
   jump_host_vm_principal_id =  module.managed_identites.managed_identities_principal_id["jump_host_vm_identity"]
   key_vault_id = module.key_vault.vault_id
+  resource_group_id = module.resource_group.resource_group_id
 }
 
 module "storage" {
