@@ -10,8 +10,6 @@ jobs:
   displayName: Filter only updated directories
   pool: 
     name: ${{ parameters.agent_pool }}
-  variables:
-    services: ${{ parameters.services }}
   steps:
   - checkout: self
     displayName: Checkout Code
@@ -19,7 +17,7 @@ jobs:
   - script: |
       echo "Detecting changed directories"
       CHANGED_SERVICES=""
-      for svc in $(services); do
+      for svc in ${{ parameters.services }}; do
         if git diff --name-only HEAD~1 HEAD | grep -q "^$svc/"; then
           echo "$svc changed"
           CHANGED_SERVICES="$CHANGED_SERVICES $svc"
