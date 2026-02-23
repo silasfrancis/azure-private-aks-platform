@@ -20,7 +20,6 @@
           - tar
           - libssl-dev
           - libicu-dev
-          - azure-cli
         state: present
         update_cache: true
 
