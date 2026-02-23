@@ -15,7 +15,6 @@ spec:
     healthyThreshold: 1
     unhealthyThreshold: 3
     http:
-      host: api.lefrancis.org
       path: /
       match:
         statusCodes:
