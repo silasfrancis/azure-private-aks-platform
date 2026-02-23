@@ -5,7 +5,7 @@ all:
       vars:
         azdevops_pool: "private-vm-pool-dev"
         keyvault_name: "silas-dev-key-vault"
-        keyvault_secret_name: "DEV_RUNNER_PAT"
+        keyvault_secret_name: "DEV-RUNNER-PAT"
         environment: "dev"
       hosts:
         vm1:
@@ -17,7 +17,7 @@ all:
       vars:
         azdevops_pool: "private-vm-pool-main"
         keyvault_name: "silas-main-key-vault"
-        keyvault_secret_name: "MAIN_RUNNER_PAT"
+        keyvault_secret_name: "MAIN-RUNNER-PAT"
         environment: "main"
       hosts:
         vm2:
