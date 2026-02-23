@@ -40,6 +40,6 @@ stages:
     - template: ../../templates/provision-resources.yaml
       parameters:
         azureSubscription: dev-oidc-connection
-        cluster_name: 
-        resource_group:
+        cluster_name: silasdev-k8-cluster
+        resource_group: dev
         agent_pool: private-vm-pool-dev
