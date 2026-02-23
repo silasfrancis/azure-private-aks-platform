@@ -26,7 +26,7 @@ spec:
               path: /
               port: 8080
             initialDelaySeconds: 10
-            periodSeconds: 5
+            periodSeconds: 300
           resources:
             limits:
               memory: "{{ .Values.apps.fastapi.resources.limits.memory }}"
