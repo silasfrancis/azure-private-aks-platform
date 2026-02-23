@@ -4,12 +4,12 @@ tasks:
   dev_runners:
     cmd: |
       # ansible dev_runners -i inventory.yaml -m ping
-      ansible-playbook -i inventory.yml setup.yml --limit dev_runners
+      ansible-playbook -i inventory.yml vm-runner-config.yaml --limit dev_runners
     
   main_runners:
     cmd: |
       # ansible main_runners -i inventory.yaml -m ping
-      ansible-playbook -i inventory.yml setup.yml --limit main_runners
+      ansible-playbook -i inventory.yml vm-runner-config.yaml --limit main_runners
 
   private_runners:
-    cmd: ansible-playbook -i inventory.yml setup.yml --limit private_runners
+    cmd: ansible-playbook -i inventory.yml vm-runner-config.yaml --limit private_runners
