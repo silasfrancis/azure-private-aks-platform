@@ -60,7 +60,7 @@
           --query "value" -o tsv
       register: agent_pat
       changed_when: false
-      no_log: true
+      # no_log: true
 
     - name: Check if agent is already configured
       stat:
