@@ -97,9 +97,14 @@
         chdir: "{{ agent_dir }}"
       when: not agent_config.stat.exists
 
+    - name: Get actual agent service name
+      shell: systemctl list-units --type=service | grep vsts | awk '{print $1}'
+      register: agent_service_name
+      changed_when: false
+
     - name: Ensure agent service is enabled and running
       systemd:
-        name: "vsts.agent.{{ azdevops_org }}.{{ azdevops_pool }}.{{ azdevops_agent_name }}"
+        name: "{{ agent_service_name.stdout }}"
         enabled: true
         state: started
 
