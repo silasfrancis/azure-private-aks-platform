@@ -72,10 +72,13 @@ jobs:
       docker run --rm \
         -v $(Build.SourcesDirectory):/repo \
         -v $(Build.SourcesDirectory)/dependency-check-report:/report \
+        -v $(Pipeline.Workspace)/nvd-cache:/usr/share/dependency-check/data \
+        -e NVD_API_KEY=$(NVD_API_KEY) \
         owasp/dependency-check:latest \
         --scan /repo/$(updated_dir) \
         --format HTML \
         --failOnCVSS 7 \
+        --nvdApiKey $(NVD_API_KEY) \
         --out /report
     condition: and(succeeded(), ne(variables['updated_dir'], ''))
     displayName: Run OWASP Dependency Check
