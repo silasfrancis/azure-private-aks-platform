@@ -5,9 +5,9 @@ parameters:
 jobs:
 - template: ./filter-directories.yaml
   parameters:
-    services: |
-      backend/fastapi
-      frontend/react-recoil
+    services:
+      - backend/fastapi
+      - frontend/react-recoil
     agent_pool: ${{ parameters.agent_pool }}
 
 - job: updateHelmManifests

@@ -2,6 +2,11 @@ parameters:
   - name: agent_pool
     type: string
 
+resources:
+  containers:
+  - container: semgrep
+    image: semgrep/semgrep:1.150.0
+
 jobs:
 - template: ./filter-directories.yaml
   parameters:
@@ -23,7 +28,8 @@ jobs:
         dir: frontend/react-recoil
   pool:
     name: ${{ parameters.agent_pool }}
-  container: semgrep/semgrep
+  container: semgrep
+  condition: ne(variables['CHANGED_DIR'], '')
   
   steps:
   - checkout: self
@@ -53,6 +59,7 @@ jobs:
         dir: frontend/react-recoil
   pool:
     name: ${{ parameters.agent_pool }}
+  condition: ne(variables['CHANGED_DIR'], '')
 
   steps:
   - checkout: self
@@ -79,6 +86,6 @@ jobs:
   - task: PublishPipelineArtifact@1
     inputs:
       targetPath: '$(Build.SourcesDirectory)/dependency-check-report'
-      artifact: 'dependency-report'
+      artifact: 'dependency-report-$(dir)'
     condition: and(succeeded(), ne(variables['updated_dir'], ''))
     displayName: Publish Dependency Report
