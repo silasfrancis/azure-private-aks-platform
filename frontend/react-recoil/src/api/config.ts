@@ -44,3 +44,4 @@ export const PUT = (url: string, body?: {}) =>
   fetchWrap({ method: 'put', url, body });
 
 export const DELETE = (url: string) => fetchWrap({ method: 'delete', url });
+

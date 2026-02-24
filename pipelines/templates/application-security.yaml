@@ -80,4 +80,5 @@ jobs:
     inputs:
       targetPath: '$(Build.SourcesDirectory)/dependency-check-report'
       artifact: 'dependency-report'
+    condition: and(succeeded(), ne(variables['updated_dir'], ''))
     displayName: Publish Dependency Report
