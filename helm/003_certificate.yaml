@@ -9,5 +9,5 @@ spec:
     - api.lefrancis.org
     - app.lefrancis.org
   issuerRef:
-    name: letsencrypt
+    name: letsencrypt-dns
     kind: ClusterIssuer
