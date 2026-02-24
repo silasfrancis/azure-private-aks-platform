@@ -23,6 +23,8 @@ jobs:
         dir: frontend/react-recoil
   pool:
     name: ${{ parameters.agent_pool }}
+  condition: ne(variables['CHANGED_DIR'], '')
+  
   steps:
   - checkout: self
     displayName: Checkout code

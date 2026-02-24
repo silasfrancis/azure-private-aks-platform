@@ -1,8 +1,13 @@
 trigger:
 - dev
 
-stages: 
+resources:
+  containers:
+  - container: semgrep-dev
+    image: semgrep/semgrep:1.150.0
 
+
+stages: 
 - stage: applicationSecurity
   jobs:
     - template: ../../templates/application-security.yaml

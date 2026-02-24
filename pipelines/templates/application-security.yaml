@@ -2,11 +2,6 @@ parameters:
   - name: agent_pool
     type: string
 
-resources:
-  containers:
-  - container: semgrep
-    image: semgrep/semgrep:1.150.0
-
 jobs:
 - template: ./filter-directories.yaml
   parameters:
@@ -28,7 +23,7 @@ jobs:
         dir: frontend/react-recoil
   pool:
     name: ${{ parameters.agent_pool }}
-  container: semgrep
+  container: semgrep-dev
   condition: ne(variables['CHANGED_DIR'], '')
   
   steps:
