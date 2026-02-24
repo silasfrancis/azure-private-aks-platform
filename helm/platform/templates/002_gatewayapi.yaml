@@ -9,15 +9,15 @@ metadata:
 spec:
   gatewayClassName: {{ .Values.gateway_class.name }}
   listeners:
+    - name: https
+      port: 443
+      protocol: HTTPS
+      tls:
+        mode: Terminate
+        certificateRefs:
+        - kind: Secret
+          name: my-app-tls-secret
+          namespace: {{ .Values.apps.namespace }}
     - name: http
       port: 80
       protocol: HTTP
-    # - name: https
-    #   port: 443
-    #   protocol: HTTPS
-    #   tls:
-    #     mode: Terminate
-    #     certificateRefs:
-    #     - kind: Secret
-    #       name: my-app-tls-secret
-    #       namespace: {{ .Values.apps.namespace }}
