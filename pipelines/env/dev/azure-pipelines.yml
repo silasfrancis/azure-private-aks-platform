@@ -1,10 +1,10 @@
 trigger:
 - dev
 
-resources:
-  containers:
-  - container: semgrep-dev
-    image: semgrep/semgrep:1.150.0
+# resources:
+#   containers:
+#   - container: semgrep-dev
+#     image: semgrep/semgrep:1.150.0
 
 
 stages: 

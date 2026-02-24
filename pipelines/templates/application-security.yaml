@@ -23,7 +23,6 @@ jobs:
         dir: frontend/react-recoil
   pool:
     name: ${{ parameters.agent_pool }}
-  container: semgrep-dev
   condition: ne(variables['CHANGED_DIR'], '')
   
   steps:
@@ -35,11 +34,14 @@ jobs:
       changedDir: $(CHANGED_DIR)
 
   - script: |
-      semgrep scan --config auto $(updated_dir)
+        echo "Running Semgrep for: $(updated_dir)"
+        docker run --rm \
+          -v $(Build.SourcesDirectory):/src \
+          -e SEMGREP_APP_TOKEN=$(SEMGREP_APP_TOKEN) \
+          semgrep/semgrep:1.150.0 \
+          semgrep scan --config auto /src/$(updated_dir)
     displayName: Semgrep Scan
     condition: and(succeeded(), ne(variables['updated_dir'], ''))
-    env:
-      SEMGREP_APP_TOKEN: $(SEMGREP_APP_TOKEN)
 
 - job: dependencyScan
   dependsOn: filterDirectories
