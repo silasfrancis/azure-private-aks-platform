@@ -13,7 +13,7 @@ apps:
         memory: 256Mi
   reactRecoil:
     replicas: 1
-    image: silasfrancis/devops-client-dev:e46aca1
+    image: silasdev.azurecr.io/frontend/react-recoil:c4505fc-0000-gc4505fc
     resources:
       limits:
         cpu: 1
