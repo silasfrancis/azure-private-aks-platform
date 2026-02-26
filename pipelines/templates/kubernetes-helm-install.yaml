@@ -15,6 +15,7 @@ jobs:
     name: ${{ parameters.agent_pool }}
   steps:
   - checkout: self
+    persistCredentials: true
     displayName: Checkout Code
   
   - task: HelmInstaller@1

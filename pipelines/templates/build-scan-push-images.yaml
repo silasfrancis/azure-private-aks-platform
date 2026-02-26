@@ -169,7 +169,7 @@ jobs:
       git diff-index --quiet HEAD || git commit -m "ci: update build info for $UPDATED_DIR [$BRANCH_NAME]"
       
       git pull --rebase origin "$BRANCH_NAME"
-      git push origin "$BRANCH_NAME"
+      git push origin HEAD:"$BRANCH_NAME"
     condition: ne(variables['updated_dir'], '')
     displayName: 'Persist build info to repo'
     env:

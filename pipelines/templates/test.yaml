@@ -27,6 +27,7 @@ jobs:
   
   steps:
   - checkout: self
+    persistCredentials: true
     displayName: Checkout code
   
   - template: ../templated-steps/get-updated-dir.yaml

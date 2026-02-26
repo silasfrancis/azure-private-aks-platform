@@ -108,7 +108,7 @@ jobs:
             git add "$HELM_VALUES_FILE"
             git commit -m "ci: update helm values for $UPDATED_DIR $BRANCH_NAME" || echo "No changes to commit"
             git pull --rebase origin $BRANCH_NAME
-            git push origin $BRANCH_NAME
+            git push origin HEAD:"$BRANCH_NAME"
         fi
     condition: ne(variables['updated_dir'], '')
     displayName: Commit and push Helm updates
