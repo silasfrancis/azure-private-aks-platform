@@ -48,7 +48,7 @@ jobs:
         cd "$WORK_DIR"
 
         echo "=== Terraform Init ==="
-        terraform init -reconfigure
+        terraform init
 
         echo "=== Terraform Validate ==="
         terraform validate

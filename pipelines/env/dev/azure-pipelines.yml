@@ -19,12 +19,12 @@ stages:
 #       parameters:
 #         agent_pool: private-vm-pool-dev
 
-- stage: buildScanAndPush
-  jobs: 
-    - template: ../../templates/build-scan-push-images.yaml
-      parameters:
-        azureSubscription: dev-oidc-connection
-        agent_pool: private-vm-pool-dev
+# - stage: buildScanAndPush
+#   jobs: 
+#     - template: ../../templates/build-scan-push-images.yaml
+#       parameters:
+#         azureSubscription: dev-oidc-connection
+#         agent_pool: private-vm-pool-dev
 
 - stage: updateHelmManifests
   jobs: 

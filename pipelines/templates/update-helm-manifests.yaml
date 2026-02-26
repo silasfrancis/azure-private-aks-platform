@@ -33,14 +33,10 @@ jobs:
       changedDir: $(CHANGED_DIR)
 
   - script: |
-      curl -L https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 -o /usr/local/bin/jq
-      curl -L https://github.com/mikefarah/yq/releases/download/v4.41.2/yq_linux_amd64 -o /usr/local/bin/yq
-      sudo chmod +x /usr/local/bin/jq
-      sudo chmod +x /usr/local/bin/yq
       jq --version
       yq --version
-    displayName: Install jq and yq
-    
+    displayName: Verify jq and yq versions in vm 
+
   - script: |
         BRANCH=$(Build.SourceBranchName)
         TARGET_DIR="helm/app/env/$BRANCH"
