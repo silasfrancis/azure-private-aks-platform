@@ -33,20 +33,23 @@ jobs:
       changedDir: $(CHANGED_DIR)
 
   - script: |
-        #install jq
-        curl -sLf "https://github.com/jqlang/jq/releases/download/jq-1.8.1/jq-linux-amd64" \
-        -o /usr/local/bin/jq
-        chmod +x /usr/local/bin/jq
-
-        # install yq
-        curl -sLf "https://github.com/mikefarah/yq/releases/download/v4.50.1/yq_linux_amd64" \
-        -o /usr/local/bin/yq
-        chmod +x /usr/local/bin/yq
-
-        jq --version
-        yq --version
-    condition: ne(variables['updated_dir'], '')
-    displayName: Install jq and yq
+      mkdir -p $(Pipeline.Workspace)/bin
+      
+      # Download jq
+      curl -L https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 -o $(Pipeline.Workspace)/bin/jq
+      
+      # Download yq
+      curl -L https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -o $(Pipeline.Workspace)/bin/yq
+      
+      # Make them executable
+      chmod +x $(Pipeline.Workspace)/bin/jq
+      chmod +x $(Pipeline.Workspace)/bin/yq
+      
+      echo "##vso[task.prependpath]$(Pipeline.Workspace)/bin"
+      
+      jq --version
+      yq --version
+    displayName: Download and Install jq/yq
 
   - script: |
         BRANCH=$(Build.SourceBranchName)
