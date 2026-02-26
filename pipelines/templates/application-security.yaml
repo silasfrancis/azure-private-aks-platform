@@ -52,8 +52,10 @@ jobs:
     matrix:
       backend:
         dir: backend/fastapi
+        cacheKey: backend 
       frontend:
         dir: frontend/react-recoil
+        cacheKey: frontend
   pool:
     name: ${{ parameters.agent_pool }}
   condition: ne(variables['CHANGED_DIR'], '')
@@ -69,16 +71,22 @@ jobs:
   - script: |
       docker --version
       mkdir -p $(Build.SourcesDirectory)/dependency-check-report
+      mkdir -p $(Pipeline.Workspace)/nvd-cache-$(cacheKey)
+      rm -f $(Pipeline.Workspace)/nvd-cache-$(cacheKey)/*.lock
+
       docker run --rm \
-        -v $(Build.SourcesDirectory):/repo \
+        -v $(Build.SourcesDirectory):/repo:ro \
         -v $(Build.SourcesDirectory)/dependency-check-report:/report \
-        -v $(Pipeline.Workspace)/nvd-cache:/usr/share/dependency-check/data \
+        -v $(Pipeline.Workspace)/nvd-cache-$(cacheKey):/usr/share/dependency-check/data \
         -e NVD_API_KEY=$(NVD_API_KEY) \
         owasp/dependency-check:latest \
         --scan /repo/$(updated_dir) \
         --format HTML \
+        --format JSON \
+        --project "$(cacheKey)-scan" \
         --failOnCVSS 7 \
         --nvdApiKey $(NVD_API_KEY) \
+        --enableExperimental \
         --out /report
     condition: and(succeeded(), ne(variables['updated_dir'], ''))
     displayName: Run OWASP Dependency Check
@@ -86,6 +94,6 @@ jobs:
   - task: PublishPipelineArtifact@1
     inputs:
       targetPath: '$(Build.SourcesDirectory)/dependency-check-report'
-      artifact: 'dependency-report-$(dir)'
+      artifact: 'dependency-report-$(cacheKey)'
     condition: and(succeeded(), ne(variables['updated_dir'], ''))
     displayName: Publish Dependency Report

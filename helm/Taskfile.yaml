@@ -6,6 +6,7 @@ env:
   RESOURCE_GROUP: dev
   CLUSTER_NAME: silasdev-k8-cluster
   ALB_MANAGED_IDENTITY_NAME: silasdev-alb-identity
+  KUBLET_MANAGED_IDENTITY_NAME: 
 
 
 tasks:
@@ -42,11 +43,6 @@ tasks:
           --version 1.9.13 \
           --set albController.namespace=${NAMESPACE} \
           --set albController.podIdentity.clientID=$MANAGED_IDENTITY_CLIENT_ID
-    
-  cert_manager:install:
-    desc: Install Cert Manager for TLS certificate configuration
-    cmd: kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.19.2/cert-manager.yaml
-
 
 # k8 configs
   1:apply_namespace:
@@ -64,14 +60,14 @@ tasks:
   3:apply_platform_configs_for_app:
     cmd:
         |
-          helm upgrade --install platform platform \
-          -f platform/env/dev/values.yaml \
+          helm upgrade --install azure-application-gateway-for-containers azure-application-gateway-for-containers \
+          -f azure-application-gateway-for-containers/env/dev/values.yaml \
           -n apps-namespace \
           --create-namespace \
           --wait --timeout 5m
 
   4:get_k8_kv_identity:
-    cmd: echo $(az identity show --name ${VAULT_MANAGED_IDENTITY_NAME}  --resource-group ${RESOURCE_GROUP} --query clientId -o tsv)
+    cmd: echo $(az identity show --name ${KUBLET_MANAGED_IDENTITY_NAME}  --resource-group ${RESOURCE_GROUP} --query clientId -o tsv)
 
   5:apply_certificate_issuer:
     cmd: kubectl apply -f 002_certificate_issuer.yaml
