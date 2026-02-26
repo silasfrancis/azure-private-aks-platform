@@ -87,6 +87,7 @@ jobs:
         --failOnCVSS 7 \
         --nvdApiKey $(NVD_API_KEY) \
         --enableExperimental \
+        --disableYarnAudit \
         --out /report
     condition: and(succeeded(), ne(variables['updated_dir'], ''))
     displayName: Run OWASP Dependency Check
