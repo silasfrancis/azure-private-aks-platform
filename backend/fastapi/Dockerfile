@@ -1,12 +1,9 @@
-# ===== Base stage (shared setup) =====
 FROM python:3.12-slim AS base
 
 WORKDIR /app
 
-# Copy only requirements.txt for base dependencies
 COPY requirements.txt ./
 
-# Upgrade pip and install base dependencies
 RUN python -m pip install --no-cache-dir -U pip \
  && python -m pip install --no-cache-dir -r requirements.txt
 

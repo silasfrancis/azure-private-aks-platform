@@ -66,6 +66,7 @@ jobs:
   - script: |
       curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo sh -s -- -b /usr/local/bin
       trivy --version
+    condition: ne(variables['updated_dir'], '')
     displayName: Install Trivy
 
   - task: AzureCLI@2
@@ -123,6 +124,7 @@ jobs:
       ACR_DEV: $(arcDev)
       UPDATED_DIR: $(updated_dir)
       IMAGE_TAG: $(image_tag)
+    condition: ne(variables['updated_dir'], '')
     displayName: Build, Scan and Push Docker Image
 
   - script: |
