@@ -39,15 +39,6 @@ jobs:
     condition: contains(variables['updated_dir'], 'backend/fastapi')
     displayName: Verify Python
 
-  - task: Cache@2
-    inputs:
-      key: 'python | "$(Agent.OS)" | $(Build.SourcesDirectory)/$(updated_dir)/requirements.txt'
-      path: $(Pipeline.Workspace)/.pip
-      restoreKeys: |
-        python | "$(Agent.OS)"
-    condition: contains(variables['updated_dir'], 'backend/fastapi')
-    displayName: Cache pip packages
-
   - task: NodeTool@0
     inputs:
       versionSpec: '24.x' 
