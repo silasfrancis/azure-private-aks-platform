@@ -21,7 +21,6 @@ jobs:
     isDev: $[eq(variables['Build.SourceBranchName'], 'dev')]
     arcMain: silasmain
     arcDev: silasdev
-    REPO: silasfrancis/azure_private_cluster
   strategy:
     matrix:
       backend:
@@ -165,7 +164,7 @@ jobs:
       git config user.name "Azure Pipeline"
       git config user.email "pipeline@example.com"
             
-      AUTH=$(echo -n ":$GITHUB_PAT" | base64)
+      AUTH=$(printf ":$GITHUB_PAT" | base64 | tr -d '\n')
       git config --local http.https://github.com/.extraheader "AUTHORIZATION: basic $AUTH"
             
       git add "$TARGET_FILE"
@@ -177,7 +176,6 @@ jobs:
     displayName: 'Persist build info to repo'
     env:
       GITHUB_PAT: $(GITHUB_PAT)
-      REPO: $(REPO)
       UPDATED_DIR: $(updated_dir)
       IS_MAIN: $(isMain)
       BRANCH_NAME: $(Build.SourceBranchName)

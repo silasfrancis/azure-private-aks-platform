@@ -15,7 +15,6 @@ jobs:
   displayName: Update Helm Values
   variables:
     CHANGED_DIR: $[dependencies.filterDirectories.outputs['getUpdatedDirectories.dir_changed']]
-    REPO: silasfrancis/azure_private_cluster
   strategy:
     matrix:
       backend:
@@ -102,7 +101,7 @@ jobs:
         git config user.name "Azure Pipeline"
         git config user.email "pipeline@example.com"
 
-        AUTH=$(echo -n ":$GITHUB_PAT" | base64)
+        AUTH=$(printf ":$GITHUB_PAT" | base64 | tr -d '\n')
         git config --local http.https://github.com/.extraheader "AUTHORIZATION: basic $AUTH"
 
         if git diff --quiet "$HELM_VALUES_FILE"; then
@@ -117,7 +116,6 @@ jobs:
     displayName: Commit and push Helm updates
     env:
       GITHUB_PAT: $(GITHUB_PAT)
-      REPO: $(REPO)
       UPDATED_DIR: $(updated_dir)
       IS_MAIN: $(isMain)
       BRANCH_NAME: $(Build.SourceBranchName)
