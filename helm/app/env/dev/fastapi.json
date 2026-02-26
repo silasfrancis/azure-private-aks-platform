@@ -1,1 +1,1 @@
-{"service":"backend/fastapi","image":"silasdev.azurecr.io/backend/fastapi:16dab32-0000-g16dab32"}
+{"service":"backend/fastapi","image":"silasdev.azurecr.io/backend/fastapi:c4505fc-0000-gc4505fc"}
