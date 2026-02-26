@@ -4,7 +4,7 @@ apps:
   namespace: apps-namespace
   fastapi:
     replicas: 2
-    image: 
+    image: silasmain.azurecr.io/backend/fastapi:c4505fc-0000-gc4505fc
     resources: 
       limits:
         cpu: 500m
@@ -14,7 +14,7 @@ apps:
         memory: 128Mi
   reactRecoil:
     replicas: 2
-    image: 
+    image: silasmain.azurecr.io/frontend/react-recoil:c4505fc-0000-gc4505fc
     resources:
       limits:
         cpu: 1
