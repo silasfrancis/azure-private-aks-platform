@@ -16,8 +16,11 @@ jobs:
   - task: TerraformInstaller@1
     inputs:
       terraformVersion: '1.10.5'
+    displayName: Install Terraform
 
   - script: |
+      BRANCH="$(Build.SourceBranchName)"
+      cd terraform/env/$BRANCH
       terraform fmt -check
     displayName: Terraform Format Check
 
@@ -27,18 +30,46 @@ jobs:
       scriptType: bash
       scriptLocation: inlineScript
       inlineScript: |
+        set -e 
+        
         az account show
-
+        
         BRANCH="$(Build.SourceBranchName)"
-        cd terraform/env/$BRANCH
-        terraform init
-        terraform plan -out=tfplan
+        WORK_DIR="terraform/env/$BRANCH"
+        
+        echo "=== Working in: $WORK_DIR ==="
+        cd "$WORK_DIR"
+        
+        echo "=== Terraform Init ==="
+        terraform init -reconfigure
+        
+        echo "=== Terraform Validate ==="
+        terraform validate
+        
+        echo "=== Terraform Plan ==="
+        terraform plan -out=tfplan -detailed-exitcode || PLAN_EXIT=$?
+        
+        # Generate JSON plan for artifact
         terraform show -json tfplan > plan.json
-        terraform apply -auto-approve
+        
+        if [ "${PLAN_EXIT:-0}" -eq 1 ]; then
+          echo "[error]Terraform plan failed"
+          exit 1
+        elif [ "${PLAN_EXIT:-0}" -eq 2 ]; then
+          echo "Changes detected - applying..."
+          
+          echo "=== Terraform Apply ==="
+          terraform apply -auto-approve tfplan
+          
+          echo "Terraform apply completed successfully"
+        else
+          echo "No changes detected"
+        fi
     displayName: Provision Terraform Resources
 
   - task: PublishPipelineArtifact@1
     inputs:
       targetPath: terraform/env/$(Build.SourceBranchName)/plan.json
-      artifact: TerraformPlan
+      artifact: TerraformPlan-$(Build.SourceBranchName)
+    condition: always()
     displayName: Publish Terraform Plan
