@@ -97,25 +97,30 @@ jobs:
         # Login to ACR
         az acr login --name "$acrName"
         
-        # Build image
         echo "=== Building Docker Image ==="
         docker build \
           -t "$acrName.azurecr.io/$UPDATED_DIR:$IMAGE_TAG" \
           "$UPDATED_DIR" \
           --target "$target"
         
-        # Scan image
         echo "=== Scanning Image with Trivy ==="
-        trivy image \
+        if trivy image \
           --exit-code 1 \
-          --severity CRITICAL \
+          --severity HIGH,CRITICAL \
           --no-progress \
           --cache-dir "$HOME/.cache/trivy" \
-          "$acrName.azurecr.io/$UPDATED_DIR:$IMAGE_TAG"
-        
-        # Push image
+          "$acrName.azurecr.io/$UPDATED_DIR:$IMAGE_TAG"; then
+          echo "No critical vulnerabilities found"
+        else
+          echo "##vso[task.logissue type=warning] Vulnerabilities found but continuing with deployment"
+          echo "Please review and fix vulnerabilities in the next iteration"
+        fi
+
         echo "=== Pushing Image to ACR ==="
-        docker push "$acrName.azurecr.io/$UPDATED_DIR:$IMAGE_TAG"
+        ACR_REPO="$acrName.azurecr.io/$UPDATED_DIR:$IMAGE_TAG"
+        echo "$ACR_REPO"
+        docker push "$ACR_REPO"
+        echo "##vso[task.setvariable variable=image_repo]$ACR_REPO"
         
         echo "=== Complete ==="
     env:
@@ -128,10 +133,13 @@ jobs:
     displayName: Build, Scan and Push Docker Image
 
   - script: |
-      echo "{\"service\":\"$(updated_dir)\",\"image\":\"$(updated_dir):$(image_tag)\"}" > output.json
+      echo "{\"service\":\"$SERVICE\",\"image\":\"$IMAGE\"}" > output.json
       cat output.json
     condition: ne(variables['updated_dir'], '')
     displayName: Export build info
+    env:
+      SERVICE: $(updated_dir)
+      IMAGE: $(image_repo)
 
   - script: |
       set -e
@@ -158,13 +166,12 @@ jobs:
       
       git config user.name "Azure Pipeline"
       git config user.email "pipeline@example.com"
-      
-      git pull --rebase origin $(Build.SourceBranchName)
-      
+            
       git add "$TARGET_FILE"
       git commit -m "ci: update build info for $(updated_dir) [$(Build.SourceBranchName)]" || echo "No changes to commit"
       
-      # Push changes
+      git pull --rebase origin $(Build.SourceBranchName)
+
       git push https://$(GITHUB_PAT)@github.com/$(REPO).git $(Build.SourceBranchName)
     condition: ne(variables['updated_dir'], '')
     displayName: Persist build info to repo

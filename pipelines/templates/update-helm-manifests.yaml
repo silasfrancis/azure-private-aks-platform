@@ -105,9 +105,9 @@ jobs:
         if git diff --quiet "$HELM_VALUES_FILE"; then
             echo "No changes to commit"
         else
-            git pull --rebase origin $(Build.SourceBranchName)
             git add "$HELM_VALUES_FILE"
             git commit -m "ci: update helm values for $(updated_dir) $(Build.SourceBranchName)" || echo "No changes to commit"
+            git pull --rebase origin $(Build.SourceBranchName)
             git push https://$(GITHUB_PAT)@github.com/$(REPO).git $(Build.SourceBranchName)
         fi
     condition: ne(variables['updated_dir'], '')
