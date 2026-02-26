@@ -44,7 +44,9 @@ jobs:
     condition: and(succeeded(), ne(variables['updated_dir'], ''))
 
 - job: dependencyScan
-  dependsOn: filterDirectories
+  dependsOn: 
+    - filterDirectories
+    - semgrepScan
   displayName: OWASP Dependency Check
   variables:
     CHANGED_DIR: $[dependencies.filterDirectories.outputs['getUpdatedDirectories.dir_changed']]

@@ -39,7 +39,7 @@ tasks:
   test:
     desc: "Run tests"
     cmds:
-      - yarn test
+      - yarn test --watchAll=false --ci
 
   build-container:
     desc: "Build container image"
