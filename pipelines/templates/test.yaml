@@ -33,11 +33,11 @@ jobs:
     parameters:
       changedDir: $(CHANGED_DIR)
   
-  - task: UsePythonVersion@0
-    inputs:
-      versionSpec: "3.12"
+  - script: |
+      python --version
+      pip --version
     condition: contains(variables['updated_dir'], 'backend/fastapi')
-    displayName: Set up Python environment
+    displayName: Verify Python
 
   - task: Cache@2
     inputs:
