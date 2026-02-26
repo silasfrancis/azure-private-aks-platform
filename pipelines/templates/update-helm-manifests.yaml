@@ -26,6 +26,7 @@ jobs:
   steps:
   - checkout: self
     displayName: Checkout Code
+    persistCredentials: true
 
   - template: ../templated-steps/get-updated-dir.yaml
     parameters:
@@ -101,16 +102,13 @@ jobs:
         git config user.name "Azure Pipeline"
         git config user.email "pipeline@example.com"
 
-        AUTH=$(printf ":$GITHUB_PAT" | base64 | tr -d '\n')
-        git config --local http.https://github.com/.extraheader "AUTHORIZATION: basic $AUTH"
-
         if git diff --quiet "$HELM_VALUES_FILE"; then
             echo "No changes to commit"
         else
             git add "$HELM_VALUES_FILE"
             git commit -m "ci: update helm values for $UPDATED_DIR $BRANCH_NAME" || echo "No changes to commit"
-            git pull --rebase origin "$BRANCH_NAME"
-            git push origin HEAD:"$BRANCH_NAME"
+            git pull --rebase origin $BRANCH_NAME
+            git push origin $BRANCH_NAME
         fi
     condition: ne(variables['updated_dir'], '')
     displayName: Commit and push Helm updates

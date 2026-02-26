@@ -32,6 +32,7 @@ jobs:
   condition: ne(variables['CHANGED_DIR'], '')
   steps:
   - checkout: self
+    persistCredentials: true
     displayName: Checkout Code
 
   - template: ../templated-steps/get-updated-dir.yaml
@@ -164,14 +165,11 @@ jobs:
       git config user.name "Azure Pipeline"
       git config user.email "pipeline@example.com"
             
-      AUTH=$(printf ":$GITHUB_PAT" | base64 | tr -d '\n')
-      git config --local http.https://github.com/.extraheader "AUTHORIZATION: basic $AUTH"
-            
       git add "$TARGET_FILE"
       git diff-index --quiet HEAD || git commit -m "ci: update build info for $UPDATED_DIR [$BRANCH_NAME]"
       
       git pull --rebase origin "$BRANCH_NAME"
-      git push origin HEAD:"$BRANCH_NAME"
+      git push origin "$BRANCH_NAME"
     condition: ne(variables['updated_dir'], '')
     displayName: 'Persist build info to repo'
     env:

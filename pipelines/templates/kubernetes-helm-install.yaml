@@ -46,12 +46,12 @@ jobs:
         --create-namespace \
         --wait --timeout 5m
 
-        helm upgrade --install platform helm/platform \
-        -f helm/platform/env/$(Build.SourceBranchName)/values.yaml \
-        -n apps-namespace \
-        --create-namespace \
-        --wait --timeout 5m
+        # helm upgrade --install azure-application-gateway-for-containers azure-application-gateway-for-containers \
+        # -f azure-application-gateway-for-containers/env/dev/values.yaml \
+        # -n apps-namespace \
+        # --create-namespace \
+        # --wait --timeout 5m
 
         #apply cert manager certificates
-        kubectl apply -f helm/002_certificate_issuer.yaml
-        kubectl apply -f helm/003_certificate.yaml
+        # kubectl apply -f helm/002_certificate_issuer.yaml
+        # kubectl apply -f helm/003_certificate.yaml
