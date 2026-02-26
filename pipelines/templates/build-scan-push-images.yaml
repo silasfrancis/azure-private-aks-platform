@@ -142,38 +142,42 @@ jobs:
 
   - script: |
       set -e
-      
-      if [ "$(isMain)" == "True" ]; then
+
+      # Use the environment variables mapped below
+      echo "Processing directory: $UPDATED_DIR"
+
+      if [ "$IS_MAIN" == "True" ]; then
         TARGET_DIR="helm/app/env/main"
       else
         TARGET_DIR="helm/app/env/dev"
       fi
-      
-      if [ "$(updated_dir)" == "backend/fastapi" ]; then
+
+      if [ "$UPDATED_DIR" == "backend/fastapi" ]; then
         TARGET_FILE="$TARGET_DIR/fastapi.json"
-      elif [ "$(updated_dir)" == "frontend/react-recoil" ]; then
+      elif [ "$UPDATED_DIR" == "frontend/react-recoil" ]; then
         TARGET_FILE="$TARGET_DIR/react-recoil.json"
       else
-        echo "[error]$(updated_dir) is not a supported path"
+        echo "##vso[task.logissue type=error]$UPDATED_DIR is not a supported path"
         exit 1
       fi
-      
-      echo "Target file: $TARGET_FILE"
-      
+
       mkdir -p "$TARGET_DIR"
       mv output.json "$TARGET_FILE"
-      
+
       git config user.name "Azure Pipeline"
       git config user.email "pipeline@example.com"
             
       git add "$TARGET_FILE"
-      git commit -m "ci: update build info for $(updated_dir) [$(Build.SourceBranchName)]" || echo "No changes to commit"
-      
-      git pull --rebase origin $(Build.SourceBranchName)
+      git diff-index --quiet HEAD || git commit -m "ci: update build info for $UPDATED_DIR [$BRANCH_NAME]"
 
-      git push https://$GITHUB_PAT@github.com/$REPO.git $(Build.SourceBranchName)
+      git pull --rebase origin "$BRANCH_NAME"
+      echo "https://$GITHUB_PAT@github.com/$REPO.git HEAD:"$BRANCH_NAME""
+      git push https://$GITHUB_PAT@github.com/$REPO.git HEAD:"$BRANCH_NAME"
     condition: ne(variables['updated_dir'], '')
-    displayName: Persist build info to repo
+    displayName: 'Persist build info to repo'
     env:
       GITHUB_PAT: $(GITHUB_PAT)
       REPO: $(REPO)
+      UPDATED_DIR: $(updated_dir)
+      IS_MAIN: $(isMain)
+      BRANCH_NAME: $(Build.SourceBranchName)
