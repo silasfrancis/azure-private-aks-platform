@@ -33,24 +33,14 @@ jobs:
       changedDir: $(CHANGED_DIR)
 
   - script: |
-      mkdir -p $(Pipeline.Workspace)/bin
-      
-      # Download jq
-      curl -L https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 -o $(Pipeline.Workspace)/bin/jq
-      
-      # Download yq
-      curl -L https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -o $(Pipeline.Workspace)/bin/yq
-      
-      # Make them executable
-      chmod +x $(Pipeline.Workspace)/bin/jq
-      chmod +x $(Pipeline.Workspace)/bin/yq
-      
-      echo "##vso[task.prependpath]$(Pipeline.Workspace)/bin"
-      
+      curl -L https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 -o /usr/local/bin/jq
+      curl -L https://github.com/mikefarah/yq/releases/download/v4.41.2/yq_linux_amd64 -o /usr/local/bin/yq
+      sudo chmod +x /usr/local/bin/jq
+      sudo chmod +x /usr/local/bin/yq
       jq --version
       yq --version
-    displayName: Download and Install jq/yq
-
+    displayName: Install jq and yq
+    
   - script: |
         BRANCH=$(Build.SourceBranchName)
         TARGET_DIR="helm/app/env/$BRANCH"
