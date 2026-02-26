@@ -6,9 +6,6 @@ trigger:
 #   - container: semgrep-dev
 #     image: semgrep/semgrep:1.150.0
 
-variables:
-  skipTests: true
-
 stages: 
 # - stage: applicationSecurity
 #   jobs:

@@ -78,7 +78,6 @@ jobs:
         
         az account show
         
-        # Use bash variables, not pipeline syntax
         if [ "$IS_MAIN" == "True" ]; then
           acrName="$ACR_MAIN"
           target="production"
@@ -143,7 +142,6 @@ jobs:
   - script: |
       set -e
 
-      # Use the environment variables mapped below
       echo "Processing directory: $UPDATED_DIR"
 
       if [ "$IS_MAIN" == "True" ]; then
@@ -167,12 +165,14 @@ jobs:
       git config user.name "Azure Pipeline"
       git config user.email "pipeline@example.com"
             
+      AUTH=$(echo -n ":$GITHUB_PAT" | base64)
+      git config --local http.https://github.com/.extraheader "AUTHORIZATION: basic $AUTH"
+            
       git add "$TARGET_FILE"
       git diff-index --quiet HEAD || git commit -m "ci: update build info for $UPDATED_DIR [$BRANCH_NAME]"
-
+      
       git pull --rebase origin "$BRANCH_NAME"
-      echo "https://$GITHUB_PAT@github.com/$REPO.git HEAD:"$BRANCH_NAME""
-      git push https://$GITHUB_PAT@github.com/$REPO.git HEAD:"$BRANCH_NAME"
+      git push origin HEAD:"$BRANCH_NAME"
     condition: ne(variables['updated_dir'], '')
     displayName: 'Persist build info to repo'
     env:
