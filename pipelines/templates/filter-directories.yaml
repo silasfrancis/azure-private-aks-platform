@@ -13,6 +13,7 @@ jobs:
     name: ${{ parameters.agent_pool }}
   steps:
   - checkout: self
+    persistCredentials: true
     fetchDepth: 2
     displayName: Checkout Code
 
