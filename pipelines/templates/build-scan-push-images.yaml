@@ -21,7 +21,6 @@ jobs:
     isDev: $[eq(variables['Build.SourceBranchName'], 'dev')]
     arcMain: silasmain
     arcDev: silasdev
-    GITHUB_PAT: $(GITHUB_PAT)
     REPO: silasfrancis/azure_private_cluster
   strategy:
     matrix:
@@ -172,7 +171,7 @@ jobs:
       
       git pull --rebase origin $(Build.SourceBranchName)
 
-      git push https://$(GITHUB_PAT)@github.com/$(REPO).git $(Build.SourceBranchName)
+      git push https://$GITHUB_PAT@github.com/$REPO.git $(Build.SourceBranchName)
     condition: ne(variables['updated_dir'], '')
     displayName: Persist build info to repo
     env:

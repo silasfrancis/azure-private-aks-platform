@@ -108,7 +108,10 @@ jobs:
             git add "$HELM_VALUES_FILE"
             git commit -m "ci: update helm values for $(updated_dir) $(Build.SourceBranchName)" || echo "No changes to commit"
             git pull --rebase origin $(Build.SourceBranchName)
-            git push https://$(GITHUB_PAT)@github.com/$(REPO).git $(Build.SourceBranchName)
+            git push https://$GITHUB_PAT@github.com/$REPO.git $(Build.SourceBranchName)
         fi
     condition: ne(variables['updated_dir'], '')
     displayName: Commit and push Helm updates
+    env:
+      GITHUB_PAT: $(GITHUB_PAT)
+      REPO: $(REPO)
