@@ -3,7 +3,7 @@ apps:
   namespace: apps-namespace
   fastapi:
     replicas: 1
-    image: silasfrancis/devops-api-dev:e46aca1
+    image: silasdev.azurecr.io/backend/fastapi:c4505fc-0000-gc4505fc
     resources:
       limits:
         cpu: 250m
