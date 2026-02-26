@@ -74,59 +74,98 @@ jobs:
       scriptType: bash
       scriptLocation: inlineScript
       inlineScript: |
+        set -e  
+        
         az account show
-
-        if [ "$(isMain)" == "True" ]; then
-          acrName="$(arcMain)"
+        
+        # Use bash variables, not pipeline syntax
+        if [ "$IS_MAIN" == "True" ]; then
+          acrName="$ACR_MAIN"
           target="production"
         else
-          acrName="$(arcDev)"
+          acrName="$ACR_DEV"
           target="dev"
         fi
-
+        
+        echo "=== Configuration ==="
+        echo "ACR Name: $acrName"
+        echo "Target: $target"
+        echo "Directory: $UPDATED_DIR"
+        echo "Image Tag: $IMAGE_TAG"
+        
+        # Login to ACR
         az acr login --name "$acrName"
-        docker build -t "$acrName.azurecr.io/$(updated_dir):$(image_tag)" "$(updated_dir)" --target "$target"
-
+        
+        # Build image
+        echo "=== Building Docker Image ==="
+        docker build \
+          -t "$acrName.azurecr.io/$UPDATED_DIR:$IMAGE_TAG" \
+          "$UPDATED_DIR" \
+          --target "$target"
+        
+        # Scan image
+        echo "=== Scanning Image with Trivy ==="
         trivy image \
           --exit-code 1 \
           --severity HIGH,CRITICAL \
           --no-progress \
-          --cache-dir "$(HOME)/.cache/trivy" \
-          "$acrName.azurecr.io/$(updated_dir):$(image_tag)"
-
-        docker push "$acrName.azurecr.io/$(updated_dir):$(image_tag)"
+          --cache-dir "$HOME/.cache/trivy" \
+          "$acrName.azurecr.io/$UPDATED_DIR:$IMAGE_TAG"
+        
+        # Push image
+        echo "=== Pushing Image to ACR ==="
+        docker push "$acrName.azurecr.io/$UPDATED_DIR:$IMAGE_TAG"
+        
+        echo "=== Complete ==="
+    env:
+      IS_MAIN: $(isMain)
+      ACR_MAIN: $(arcMain)
+      ACR_DEV: $(arcDev)
+      UPDATED_DIR: $(updated_dir)
+      IMAGE_TAG: $(image_tag)
     displayName: Build, Scan and Push Docker Image
 
   - script: |
       echo "{\"service\":\"$(updated_dir)\",\"image\":\"$(updated_dir):$(image_tag)\"}" > output.json
+      cat output.json
     condition: ne(variables['updated_dir'], '')
-    displayName: export build info
-  
+    displayName: Export build info
+
   - script: |
-        if [ "$(isMain)" == "True" ]; then
-         TARGET_DIR="helm/app/env/main"
-        else
-         TARGET_DIR="helm/app/env/dev"
-        fi
-
-        if [ "$(updated_dir)" == "backend/fastapi" ]; then
-         TARGET_FILE="$TARGET_DIR/fastapi.json"
-        elif [ "$(updated_dir)" == "frontend/react-recoil" ]; then
-         TARGET_FILE="$TARGET_DIR/react-recoil.json"
-        else
-         echo "$(updated_dir) is not a supported path"
-         exit 1
-        fi
-
-        mkdir -p "$TARGET_DIR"
-        mv output.json "$TARGET_FILE"
-
-        git config user.name "Azure Pipeline"
-        git config user.email "pipeline@example.com"
-
-        git pull --rebase origin $(Build.SourceBranchName)
-        git add "$TARGET_FILE"
-        git commit -m "ci: update build info for $(updated_dir) $(Build.SourceBranchName)" || echo "No changes to commit"
-        
-        git push https://$(GITHUB_PAT)@github.com/$(REPO).git $(Build.SourceBranchName)    condition: ne(variables['updated_dir'], '')
+      set -e
+      
+      if [ "$(isMain)" == "True" ]; then
+        TARGET_DIR="helm/app/env/main"
+      else
+        TARGET_DIR="helm/app/env/dev"
+      fi
+      
+      if [ "$(updated_dir)" == "backend/fastapi" ]; then
+        TARGET_FILE="$TARGET_DIR/fastapi.json"
+      elif [ "$(updated_dir)" == "frontend/react-recoil" ]; then
+        TARGET_FILE="$TARGET_DIR/react-recoil.json"
+      else
+        echo "[error]$(updated_dir) is not a supported path"
+        exit 1
+      fi
+      
+      echo "Target file: $TARGET_FILE"
+      
+      mkdir -p "$TARGET_DIR"
+      mv output.json "$TARGET_FILE"
+      
+      git config user.name "Azure Pipeline"
+      git config user.email "pipeline@example.com"
+      
+      git pull --rebase origin $(Build.SourceBranchName)
+      
+      git add "$TARGET_FILE"
+      git commit -m "ci: update build info for $(updated_dir) [$(Build.SourceBranchName)]" || echo "No changes to commit"
+      
+      # Push changes
+      git push https://$(GITHUB_PAT)@github.com/$(REPO).git $(Build.SourceBranchName)
+    condition: ne(variables['updated_dir'], '')
     displayName: Persist build info to repo
+    env:
+      GITHUB_PAT: $(GITHUB_PAT)
+      REPO: $(REPO)

@@ -41,10 +41,12 @@ jobs:
 
   - task: Cache@2
     inputs:
-      key: 'python | "$(Agent.OS)" | $(updated_dir)/requirements.txt'
-      path: ~/.cache/pip
+      key: 'python | "$(Agent.OS)" | $(Build.SourcesDirectory)/$(updated_dir)/requirements.txt'
+      path: $(Pipeline.Workspace)/.pip
+      restoreKeys: |
+        python | "$(Agent.OS)"
     condition: contains(variables['updated_dir'], 'backend/fastapi')
-    displayName: Cache pip downloads
+    displayName: Cache pip packages
 
   - task: NodeTool@0
     inputs:
@@ -55,7 +57,7 @@ jobs:
   - task: Cache@2
     inputs:
       key: 'yarn | "$(Agent.OS)" | $(Build.SourcesDirectory)/$(updated_dir)/yarn.lock'
-      path: $(updated_dir)/node_modules
+      path:  $(Build.SourcesDirectory)/$(updated_dir)/node_modules
     condition: contains(variables['updated_dir'], 'frontend/react-recoil')
     displayName: Cache node_modules
   
