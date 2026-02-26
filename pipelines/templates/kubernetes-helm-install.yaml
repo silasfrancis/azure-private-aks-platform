@@ -46,7 +46,6 @@ jobs:
         --create-namespace \
         --wait --timeout 5m
 
-        # install chart for platform configs (GatewayClass, Gateway API, HTTP Route)
         helm upgrade --install platform helm/platform \
         -f helm/platform/env/$(Build.SourceBranchName)/values.yaml \
         -n apps-namespace \

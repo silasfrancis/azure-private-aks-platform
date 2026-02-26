@@ -46,9 +46,9 @@ jobs:
     condition: contains(variables['updated_dir'], 'backend/fastapi')
     displayName: Cache pip downloads
 
-  - task: UseNode@1
+  - task: NodeTool@0
     inputs:
-      version: ">=24.0.0"
+      versionSpec: '24.x' 
     condition: contains(variables['updated_dir'], 'frontend/react-recoil')
     displayName: Set up Node environment
   
