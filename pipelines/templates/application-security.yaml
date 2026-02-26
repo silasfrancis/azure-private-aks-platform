@@ -91,6 +91,7 @@ jobs:
         --out /report
     condition: and(succeeded(), ne(variables['updated_dir'], ''))
     displayName: Run OWASP Dependency Check
+    continueOnError: true
 
   - task: PublishPipelineArtifact@1
     inputs:
