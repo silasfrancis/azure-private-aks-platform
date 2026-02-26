@@ -26,11 +26,11 @@ stages:
 #         azureSubscription: dev-oidc-connection
 #         agent_pool: private-vm-pool-dev
 
-- stage: updateHelmManifests
-  jobs: 
-    - template: ../../templates/update-helm-manifests.yaml
-      parameters:
-        agent_pool: private-vm-pool-dev
+# - stage: updateHelmManifests
+#   jobs: 
+#     - template: ../../templates/update-helm-manifests.yaml
+#       parameters:
+#         agent_pool: private-vm-pool-dev
 
 - stage: provisionTerraformResources
   jobs: 
