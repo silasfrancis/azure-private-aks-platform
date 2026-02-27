@@ -31,7 +31,8 @@ The VNet is segmented into:
 
 - Application Gateway subnet (public ingress)  
 - AKS subnet (private compute)  
-- Management subnet (jumphost and self-hosted runner)  
+- Management subnet (jumphost and self-hosted runner) 
+- Database subnet (postgres flexible server)
 
 Only the Application Gateway exposes a public endpoint.
 
@@ -54,6 +55,7 @@ All internal service-to-service communication remains within the VNet boundary.
 - OIDC federation or Azure Service Connections  
 - No long-lived cloud credentials stored in pipelines  
 - Scoped RBAC permissions assigned to service principals  
+- Separate connections for different environments (dev/prod)
 
 ### Managed Identities
 
@@ -151,3 +153,8 @@ This platform enforces:
 - Centralized secret management  
 - Least-privilege access control  
 - A single controlled ingress boundary  
+
+## Related Documentation
+
+- [← Back to README](../README.md)
+- [architecture.md](architecture.md)
