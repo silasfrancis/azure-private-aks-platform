@@ -136,7 +136,7 @@ Application Updated in Cluster
 - No public build agents  
 - Infrastructure access controlled via scoped service connections  
 
-Detailed security documentation is available in `docs/security.md`.
+Detailed security documentation is available in [`docs/security.md`](docs/security.md).
 
 ---
 
@@ -213,5 +213,5 @@ The runner VM is provisioned with Terraform and configured using Ansible.
 
 Detailed documentation is available in the `docs/` directory:
 
-- [docs/architecture.md](docs/architecture.md) – Infrastructure and component breakdown  
+- [`docs/architecture.md`](docs/architecture.md) – Infrastructure and component breakdown  
 - [`docs/security.md`](docs/security.md) – Security model and threat considerations  
