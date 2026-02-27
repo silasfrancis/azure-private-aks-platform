@@ -25,7 +25,7 @@ The entire system is designed around network isolation, identity-based access, a
 
 ## Key Features
 
-- Private AKS Cluster (Only accessible only inside the VNet)
+- Private AKS Cluster (Only accessible inside the VNet)
 - Azure Application Gateway for Containers as Gateway API ingress controller
 - Self-hosted Azure DevOps runner inside the VNet
 - Ansible-based configuration management
@@ -40,6 +40,7 @@ The entire system is designed around network isolation, identity-based access, a
 
 ### High-Level Flow
 
+```
 Developer
 ↓
 Azure DevOps (OIDC / Service Connection)
@@ -64,10 +65,11 @@ Helm Deployments to Private AKS
 ↓
 Application Workloads (FastAPI + React)
 
-
----
+```
 
 ## Runtime Traffic Flow
+
+```
 
 Client
 ↓
@@ -83,10 +85,11 @@ Application Pods (FastAPI / React)
 ↓
 Azure PostgreSQL Flexible Server
 
-
----
+```
 
 ## CI/CD Execution Flow (Private Deployment Path)
+
+```
 
 Developer Commit
 ↓
@@ -102,6 +105,7 @@ AKS pulls secrets from Azure Key Vault (via External Secrets Operator)
 ↓
 Application Updated in Cluster
 
+```
 ---
 
 ## Security Model
@@ -173,7 +177,7 @@ The runner VM is provisioned using Terraform and configured using Ansible.
 ## Directory Overview
 
 - ansible/ – Configuration management and private runner setup  
-- azure_pipelines/ – CI/CD definitions and reusable templates  
+- azure_pipelines/ – CI/CD definitions and reusable templates for Azure Devops pipelines
 - helm/ – Kubernetes application deployments  
 - terraform/ – Infrastructure as Code for Azure resources  
 - backend/ – FastAPI backend  

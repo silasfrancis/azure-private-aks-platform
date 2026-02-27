@@ -140,29 +140,7 @@ All internal service communication remains within the VNet boundary.
 
 ---
 
-## 8. Security Tradeoffs
-
-- Private clusters increase operational complexity
-- Self-hosted runners require patching and lifecycle management
-- Strict isolation may slow debugging workflows
-
-These tradeoffs are intentional to simulate production-grade security posture.
-
----
-
-## 9. Future Security Enhancements
-
-- Azure Policy enforcement for AKS
-- Pod Security Standards / Admission Controllers
-- Network Policies within Kubernetes
-- Web Application Firewall configuration on Application Gateway
-- Container image vulnerability scanning
-- Centralized logging and SIEM integration
-- Disaster recovery and backup validation testing
-
----
-
-## 10. Security Posture Summary
+## 8. Security Posture Summary
 
 This platform enforces:
 
@@ -171,5 +149,3 @@ This platform enforces:
 - Centralized secret management
 - Least privilege access control
 - Single controlled ingress boundary
-
-The architecture prioritizes production realism and defense-in-depth principles over simplicity.

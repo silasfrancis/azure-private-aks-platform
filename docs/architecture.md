@@ -17,6 +17,8 @@ This platform is designed to:
 
 ### High-Level Flow
 
+```
+
 Developer  
 ↓  
 Azure DevOps (OIDC / Service Connection)  
@@ -38,6 +40,7 @@ Helm Deployments
 ↓  
 Application Workloads (FastAPI + React)
 
+```
 ---
 
 ## 3. Network Architecture
@@ -61,13 +64,15 @@ The Azure Virtual Network is segmented into dedicated subnets:
 
 - **Private Endpoint Integration**
   - Azure PostgreSQL Flexible Server
-  - Azure Key Vault (if configured with private endpoint)
+  - Azure Key Vault for DB secrets
 
 All east-west traffic remains internal to the VNet.
 
 ---
 
 ## 4. Runtime Traffic Flow
+
+```
 
 Client  
 ↓  
@@ -90,11 +95,14 @@ Key characteristics:
 - No direct public exposure of pods
 - Database accessible only via private networking
 
+```
 ---
 
 ## 5. CI/CD Architecture
 
 ### Private Deployment Flow
+
+```
 
 Developer Commit  
 ↓  
@@ -117,6 +125,7 @@ Application Updated
 - Cluster credentials are never exposed publicly
 - OIDC reduces secret-based authentication
 
+```
 ---
 
 ## 6. Secret Management Architecture
