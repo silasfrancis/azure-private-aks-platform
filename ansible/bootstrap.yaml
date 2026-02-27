@@ -1,0 +1,96 @@
+- name: Bootstrap Private Runner VM
+  hosts: private_runners
+  become: yes
+    
+  tasks:
+
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install basic dependencies
+      apt:
+        name:
+          - ca-certificates
+          - curl
+          - wget
+          - git
+          - unzip
+          - npm
+          - yarn
+          - jq
+          - software-properties-common
+        state: present
+
+    - name: Add deadsnakes PPA for Python 3.12
+      apt_repository:
+        repo: ppa:deadsnakes/ppa
+        state: present
+
+    - name: Update apt cache after adding PPA
+      apt:
+        update_cache: yes
+
+    - name: Install Python 3.12 and dependencies
+      apt:
+        name:
+          - python3.12
+          - python3.12-venv
+          - python3.12-dev
+          - python3-pip
+        state: present
+
+    - name: Install Python build dependencies
+      apt:
+        name:
+          - build-essential
+          - libbz2-dev
+          - libffi-dev
+          - liblzma-dev
+          - libncurses5-dev
+          - libreadline-dev
+          - libsqlite3-dev
+          - libssl-dev
+          - zlib1g-dev
+          - tk-dev
+          - uuid-dev
+          - libgdbm-dev
+          - libc6-dev
+        state: present
+
+    - name: Set Python 3.12 as default python
+      alternatives:
+        name: python
+        path: /usr/bin/python3.12
+        link: /usr/bin/python
+        priority: 1
+
+    - name: Install Docker
+      shell: |
+        # Add Docker's official GPG key
+        apt update
+        apt install -y ca-certificates curl
+        install -m 0755 -d /etc/apt/keyrings
+        curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+        chmod a+r /etc/apt/keyrings/docker.asc
+        
+        # Add the repository to Apt sources
+        tee /etc/apt/sources.list.d/docker.sources <<EOF
+        Types: deb
+        URIs: https://download.docker.com/linux/ubuntu
+        Suites: $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}")
+        Components: stable
+        Signed-By: /etc/apt/keyrings/docker.asc
+        EOF
+        
+        apt update
+        apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+      args:
+        creates: /usr/bin/docker
+
+    - name: Install yq
+      shell: |
+        wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+        chmod a+x /usr/local/bin/yq
+      args:
+        creates: /usr/local/bin/yq

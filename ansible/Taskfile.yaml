@@ -1,6 +1,9 @@
 version: "3"
 
 tasks:
+  install_neccessary_packages_for_runner:
+    cmd: ansible-playbook -i inventory.yaml bootstrap.yaml
+
   dev_runners:
     cmd: |
       # ansible dev_runners -i inventory.yaml -m ping
@@ -11,5 +14,5 @@ tasks:
       # ansible main_runners -i inventory.yaml -m ping
       ansible-playbook -i inventory.yaml vm-runner-config.yaml --limit main_runners
 
-  private_runners:
+  all_runners:
     cmd: ansible-playbook -i inventory.yaml vm-runner-config.yaml --limit private_runners

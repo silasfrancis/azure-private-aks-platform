@@ -25,6 +25,9 @@ resource "azurerm_storage_account" "tf_backend" {
     versioning_enabled = true 
     change_feed_enabled = true
   }
+  lifecycle {
+    prevent_destroy = true
+  }
 
   tags = {
     env = var.env
@@ -35,4 +38,7 @@ resource "azurerm_storage_container" "tf_state" {
   name = "${var.env}tfstate"
   storage_account_id = azurerm_storage_account.tf_backend.id
   container_access_type = "private"
+  lifecycle {
+    prevent_destroy = true
+  }
 }
