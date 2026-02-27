@@ -2,13 +2,14 @@
 
 This directory contains detailed documentation for the Private Azure Kubernetes CI/CD Platform.
 
-For a high-level overview, repository structure, and setup guidance,  see the [root README](../README.md)
+> For a high-level overview, setup instructions, and repository structure, see the [root README](../README.md).
+
 ---
 
 ## Overview of Documentation
 
-- **architecture.md** – System architecture, infrastructure layout, network segmentation, and runtime traffic flows  
-- **security.md** – Security model, identity and access management, secret handling, and threat mitigation strategies  
+- `architecture.md` – System architecture, infrastructure layout, network segmentation, and runtime traffic flows  
+- `security.md` – Security model, identity and access management, secret handling, and threat mitigation strategies  
 
 ---
 
