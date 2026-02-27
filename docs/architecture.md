@@ -161,21 +161,3 @@ All infrastructure is provisioned using Terraform:
 - Role assignments and identities
 
 Remote state is stored in Azure Storage Account.
-
----
-
-## 9. Scalability Considerations
-
-- AKS supports horizontal pod autoscaling
-- PostgreSQL can be vertically scaled
-- Application Gateway scales independently
-- Runner VM can be replicated if needed
-
----
-
-## 10. Architectural Tradeoffs
-
-- Increased operational complexity for improved security
-- Private cluster limits ease of direct debugging
-- Self-hosted runner introduces maintenance overhead
-- Greater isolation improves production realism
