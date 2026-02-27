@@ -71,7 +71,7 @@ Application Workloads (FastAPI + React)
 
 ## Runtime Traffic Flow
 
-```text
+```
 Client
 ↓
 Public Endpoint (Application Gateway)
@@ -91,7 +91,7 @@ Azure PostgreSQL Flexible Server
 
 ## CI/CD Execution Flow (Private Deployment Path)
 
-```text
+```
 Developer Commit
 ↓
 Azure DevOps Pipeline Trigger
