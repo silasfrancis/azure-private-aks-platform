@@ -6,8 +6,8 @@ This directory contains detailed documentation for the Private Azure Kubernetes 
 
 ## Overview of Documentation
 
-- `architecture.md` – System architecture, infrastructure layout, network segmentation, and runtime traffic flows  
-- `security.md` – Security model, identity and access management, secret handling, and threat mitigation strategies  
+- [architecture.md](architecture.md) – System architecture, infrastructure layout, network segmentation, and runtime traffic flows  
+- [security.md](security.md) – Security model, identity and access management, secret handling, and threat mitigation strategies  
 
 ---
 

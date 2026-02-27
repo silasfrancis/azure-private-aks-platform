@@ -157,4 +157,4 @@ This platform enforces:
 ## Related Documentation
 
 - [← Back to README](../README.md)
-- [architecture.md](architecture.md)
+- [← architecture.md](architecture.md)
