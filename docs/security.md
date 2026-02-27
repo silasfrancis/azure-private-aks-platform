@@ -1,6 +1,6 @@
 # Security Documentation
 
-> **Note**: For security-specific details, see [security.md](security.md). For getting started, see the [root README](../README.md).
+> **Note**: For architectural context, see [architecture.md](architecture.md). For getting started, see the [root README](../README.md).
 
 ## 1. Security Objectives
 

@@ -1,6 +1,6 @@
 # Architecture Documentation
 
-> **Note**: For security-specific details, see [Security Model](security.md). For getting started, see the [main README](../README.md).
+> **Note**: For security-specific details, see [security.md](security.md). For getting started, see the [root README](../README.md).
 
 ## 1. Architectural Goals
 
@@ -173,4 +173,4 @@ After Terraform provisions infrastructure, Ansible handles:
 ## Related Documentation
 
 - [← Back to README](../README.md)
-- [Security Model →](security.md)
+- [security.md→](security.md)
