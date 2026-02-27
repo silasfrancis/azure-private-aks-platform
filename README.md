@@ -213,5 +213,5 @@ The runner VM is provisioned with Terraform and configured using Ansible.
 
 Detailed documentation is available in the `docs/` directory:
 
-- [Architecture Overview](docs/architecture.md) – Infrastructure and component breakdown  
-- [Security Model](docs/security.md) – Security model and threat considerations  
+- [docs/architecture.md](docs/architecture.md) – Infrastructure and component breakdown  
+- [`docs/security.md`](docs/security.md) – Security model and threat considerations  
