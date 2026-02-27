@@ -4,8 +4,6 @@ This directory contains detailed documentation for the Private Azure Kubernetes 
 
 > For a high-level overview, setup instructions, and repository structure, see the [root README](../README.md).
 
----
-
 ## Overview of Documentation
 
 - `architecture.md` – System architecture, infrastructure layout, network segmentation, and runtime traffic flows  
