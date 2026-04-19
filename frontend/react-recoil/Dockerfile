@@ -1,8 +1,8 @@
-FROM node:24-bullseye-slim AS base
+ARG BUILDPLATFORM=linux/amd64
+
+FROM --platform=$BUILDPLATFORM node:24-bullseye-slim AS builder
 WORKDIR /app
 
-FROM base AS dev
-
 COPY package.json yarn.lock ./
 
 RUN --mount=type=cache,target=/app/.yarn_cache \
@@ -13,26 +13,18 @@ COPY . .
 
 RUN yarn build
 
-RUN yarn global add serve
+RUN yarn install --frozen-lockfile --production
+
+FROM gcr.io/distroless/nodejs20-debian13
+
+WORKDIR /app
+
+COPY --from=builder /app /app
+
+ENV NODE_ENV=production
 
 EXPOSE 3000
 
-CMD ["serve", "-s", "build", "-l", "3000"]
+USER nonroot
 
-FROM base AS production
-
-COPY package.json yarn.lock ./
-
-RUN --mount=type=cache,target=/app/.yarn_cache \
-    yarn config set cache-folder /app/.yarn_cache && \
-    yarn install --frozen-lockfile
-
-COPY . .
-
-RUN yarn build
-
-RUN yarn global add serve
-
-EXPOSE 3000
-
-CMD ["serve", "-s", "build", "-l", "3000"]
+CMD ["node", "node_modules/serve/build/main.js", "-s", "build", "-l", "3000"]
