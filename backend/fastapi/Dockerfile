@@ -1,29 +1,29 @@
-FROM python:3.12-slim AS base
+ARG BUILDPLATFORM=linux/amd64
 
+FROM --platform=$BUILDPLATFORM python:3.12-slim AS builder
 WORKDIR /app
 
 COPY requirements.txt ./
 
 RUN python -m pip install --no-cache-dir -U pip \
- && python -m pip install --no-cache-dir -r requirements.txt
-
-ENV PYTHONPATH=/app
+ && python -m pip install --no-cache-dir --prefix=/install -r requirements.txt
 
 COPY . .
 
-EXPOSE 8080
+ENV PYTHONPATH=/app
 
-FROM base AS dev
+FROM gcr.io/distroless/python3-debian13
 
-COPY requirements-ci.txt ./
-RUN python -m pip install --no-cache-dir -r requirements-ci.txt
+WORKDIR /app
 
-ENV APP_ENV=dev
+COPY --from=builder /install /usr/local
+COPY --from=builder /app /app
 
-CMD ["uvicorn", "conduit.app:app", "--host", "0.0.0.0", "--port", "8080", "--reload"]
-
-FROM base AS production
-
+ENV PYTHONPATH=/app
 ENV APP_ENV=production
 
-CMD ["uvicorn", "conduit.app:app", "--host", "0.0.0.0", "--port", "8080", "--workers", "4"]
+EXPOSE 8080
+
+USER nonroot
+
+CMD ["-m", "uvicorn", "conduit.app:app", "--host", "0.0.0.0", "--port", "8080", "--workers", "4"]
